@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include ../Defines.wxi ?>
+	<Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="RootFilesComponent" Guid="8273208C-D86C-411A-9C11-2169D501DB06">
+        <File Id="TriggersNotepad.exe" Source="$(var.TriggersNotepad.TargetDir)TriggersNotepad.exe" KeyPath="yes" />
+        <File Id="TriggersNotepad.exe.config" Source="$(var.TriggersNotepad.TargetDir)TriggersNotepad.exe.config" />
+        
+        <File Id="Readme.txt" Source="$(var.TriggersNotepad.TargetDir)Readme.txt" />
+        <File Id="Changelog.txt" Source="$(var.TriggersNotepad.TargetDir)Changelog.txt" />
+        
+        <File Id="ICSharpCode.AvalonEdit.dll" Source="$(var.TriggersNotepad.TargetDir)ICSharpCode.AvalonEdit.dll" />
+        <File Id="NHunspell.dll" Source="$(var.TriggersNotepad.TargetDir)NHunspell.dll" />
+        <File Id="Hunspellx86.dll" Source="$(var.TriggersNotepad.TargetDir)Hunspellx86.dll" />
+        <File Id="Hunspellx64.dll" Source="$(var.TriggersNotepad.TargetDir)Hunspellx64.dll" />
+        <File Id="System.Windows.Interactivity.dll" Source="$(var.TriggersNotepad.TargetDir)System.Windows.Interactivity.dll" />
+
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)" Name="Installed" Type="integer" Value="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="InstallFileTypesFolder">
+      <Component Id="Win7IconFilesComponent" Guid="E17189B2-D593-4794-80B5-48C645FBBBFC">
+        <File Id="win7txt.ico" Source="Resources\FileTypes\Win7\txt.ico" KeyPath="yes"/>
+        <File Id="win7log.ico" Source="Resources\FileTypes\Win7\log.ico"/>
+        <File Id="win7ini.ico" Source="Resources\FileTypes\Win7\ini.ico"/>
+        <File Id="win7inf.ico" Source="Resources\FileTypes\Win7\inf.ico"/>
+        <File Id="win7md.ico" Source="Resources\FileTypes\Win7\md.ico"/>
+        <File Id="win7reg.ico" Source="Resources\FileTypes\Win7\reg.ico"/>
+        <File Id="win7bat.ico" Source="Resources\FileTypes\Win7\bat.ico"/>
+        <File Id="win7cmd.ico" Source="Resources\FileTypes\Win7\cmd.ico"/>
+      </Component>
+
+      <Component Id="Win10IconFilesComponent" Guid="04268DF6-261F-4289-9D63-B7DF8BB818AE">
+        <File Id="win10txt.ico" Source="Resources\FileTypes\Win10\txt.ico" KeyPath="yes"/>
+        <File Id="win10log.ico" Source="Resources\FileTypes\Win10\log.ico"/>
+        <File Id="win10ini.ico" Source="Resources\FileTypes\Win10\ini.ico"/>
+        <File Id="win10inf.ico" Source="Resources\FileTypes\Win10\inf.ico"/>
+        <File Id="win10md.ico" Source="Resources\FileTypes\Win10\md.ico"/>
+        <File Id="win10reg.ico" Source="Resources\FileTypes\Win10\reg.ico"/>
+        <File Id="win10bat.ico" Source="Resources\FileTypes\Win10\bat.ico"/>
+        <File Id="win10cmd.ico" Source="Resources\FileTypes\Win10\cmd.ico"/>
+      </Component>
+    </DirectoryRef>
+      
+    <DirectoryRef Id="InstallDictionaryFolder">
+      <Component Id="DictionaryFilesComponent" Guid="390377F6-AD94-41E4-8117-44B02A3A3D7B">
+        <File Id="en_US.aff" Source="$(var.TriggersNotepad.TargetDir)Dictionaries\en_US.aff" KeyPath="yes"/>
+        <File Id="en_US.dic" Source="$(var.TriggersNotepad.TargetDir)Dictionaries\en_US.dic" />
+      </Component>
+    </DirectoryRef>
+	</Fragment>
+</Wix>

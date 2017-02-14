@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="WelcomeDlgDescription">Press Next to continue with installing Trigger's Notepad. Press Cancel at any time to abort the installation. Installing Trigger's Notepad will create file associations for the following text files: .txt, .log, .ini, .inf, and .md</String>
+  
+</WixLocalization>

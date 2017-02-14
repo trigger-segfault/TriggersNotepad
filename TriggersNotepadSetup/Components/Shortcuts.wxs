@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include ../Defines.wxi ?>
+	<Fragment>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcutComponent" Guid="E188855C-20B9-4616-86D8-6A015D4913D7">
+        <Shortcut Id="DesktopShortcut"
+            Name="Trigger's Notepad"
+            Description="Comment field in your shortcut"
+            Target="[INSTALLFOLDER]TriggersNotepad.exe"
+            WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="DesktopFolderRemove" On="uninstall"/>
+        <RegistryValue
+            Root="HKCU"
+            Key="$(var.SoftwarePath)"
+            Name="DesktopShortcut"
+            Type="integer"
+            Value="1"
+            KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="StartMenuShortcutComponent" Guid="F8E14D1D-FEEF-48FC-8768-4B1B76DA364F">
+        <Shortcut Id="StartMenuShortcut"
+            Name="Trigger's Notepad"
+            Description="Comment field in your shortcut"
+            Target="[INSTALLFOLDER]TriggersNotepad.exe"
+            WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+        <RegistryValue
+            Root="HKCU"
+            Key="$(var.SoftwarePath)"
+            Name="StartMenuShortcut"
+            Type="integer"
+            Value="1"
+            KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+	</Fragment>
+</Wix>

@@ -1,0 +1,94 @@
+﻿<Window x:Class="FontDialogSample.FontChooser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="clr-namespace:FontDialogSample" 
+    Title="Choose a Font" 
+    Width="463" Height="533"
+    Background="{x:Static SystemColors.ControlBrush}" ResizeMode="NoResize" Icon="/TriggersNotepad;component/Resources/Fonts.png"
+    >
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="330"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Row 0: Selection controls -->
+        <Grid Grid.Column="0" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="89"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26"/>
+                <RowDefinition Height="111"/>
+                <RowDefinition Height="38"/>
+                <RowDefinition Height="155"/>
+            </Grid.RowDefinitions>
+
+            <!-- Families -->
+            <Label Grid.Column="0" Grid.Row="0" Content="Font Family"/>
+            <DockPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="3">
+                <TextBox DockPanel.Dock="Top" Name="fontFamilyTextBox"/>
+                <ListBox Name="fontFamilyList" FontSize="16">
+                    <ListBox.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}">#3399FF</SolidColorBrush>
+                    </ListBox.Resources>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Family Typefaces (weight, style, stretch) -->
+            <Label Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="3" Content="Typeface"/>
+            <ListBox Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="3" Name="typefaceList" FontSize="16">
+                <ListBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}">#3399FF</SolidColorBrush>
+                </ListBox.Resources>
+            </ListBox>
+
+            <!-- Font sizes -->
+            <Label Grid.Column="2" Grid.Row="2" Margin="0,12,0,0" Content="Size"/>
+            <DockPanel Grid.Column="2" Grid.Row="3">
+                <TextBox DockPanel.Dock="Top" Name="sizeTextBox"/>
+                <ListBox Name="sizeList">
+                    <ListBox.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}">#3399FF</SolidColorBrush>
+                    </ListBox.Resources>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Text decorations -->
+            <DockPanel Grid.Column="4" Grid.Row="3">
+                <CheckBox DockPanel.Dock="Top" Content="Underline" Name="underlineCheckBox" IsEnabled="False"/>
+                <CheckBox DockPanel.Dock="Top" Content="Baseline" Name="baselineCheckBox" IsEnabled="False"/>
+                <CheckBox DockPanel.Dock="Top" Content="Strikethrough" Name="strikethroughCheckBox" IsEnabled="False"/>
+                <CheckBox Content="Overline" Name="overlineCheckBox" IsEnabled="False"/>
+            </DockPanel>
+        </Grid>
+
+        <!-- Row 1: Tab control with family typeface samples, etc. -->
+
+        <!-- Row 2: Preview text -->
+        <DockPanel Grid.Column="0" Grid.Row="1" Margin="0,12,0,0">
+            <TextBlock DockPanel.Dock="Top">Preview</TextBlock>
+            <TextBox
+                FontSize="16" AcceptsReturn="True" 
+                TextAlignment="Center" 
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Auto"
+                Name="previewTextBox"
+                >
+                The quick brown fox jumps over the lazy dog
+            </TextBox>
+        </DockPanel>
+
+        <!-- Row 3: OK and Cancel buttons -->
+        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="OK" Width="86" IsDefault="True" Click="OnOKButtonClicked" Margin="0,0,10,0"/>
+            <Button Content="Cancel" Width="86" Click="OnCancelButtonClicked"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

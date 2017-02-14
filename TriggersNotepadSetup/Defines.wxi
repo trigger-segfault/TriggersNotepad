@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <?define SoftwarePath="Software\TriggersToolsGames\TriggersNotepad"?>
+  <?define ProductVersion=!(bind.FileVersion.TriggersNotepad.exe)?>
+  <?define ProductUpgradeCode=f937448b-90f7-4153-b108-5c271844c876?>
+  <?define ProductURL=https://github.com/trigger-death/TriggersNotepad?>
+</Include>

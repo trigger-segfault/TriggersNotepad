@@ -1,0 +1,10 @@
+TriggersNotepad/Resources/Shadows/*
+
+TriggersNotepad/Resources/Old Encodings/*
+TriggersNotepadSetup/Work/*
+
+.vs
+
+*/bin/*
+*/obj/*
+packages/*

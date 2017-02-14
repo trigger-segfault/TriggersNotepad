@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include ../Defines.wxi ?>
+	<Fragment>
+		<!-- TODO: Put your code here. -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="BasicFileAssociation" Guid="8F21BDE2-5E45-4634-B0DD-76188A25029A">
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)" Name="BasicFileAssociation" Type="integer" Value="1"/>
+        
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.txt" Name="FriendlyTypeName" Value="Text Document" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.txt\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\txt.ico" Type="string" />
+        <ProgId Id="TriggersNotepad.txt" Description="Text Document">
+          <Extension Id="txt" ContentType="text/plain">
+            <Verb Id="Open" Command="Open" Argument="&quot;%1&quot;" TargetFile="TriggersNotepad.exe"/>
+          </Extension>
+        </ProgId>
+
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.log" Name="FriendlyTypeName" Value="Log File" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.log\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\log.ico" Type="string" />
+        <ProgId Id="TriggersNotepad.log" Description="Log File">
+          <Extension Id="log" ContentType="text/plain">
+            <Verb Id="Open" Command="Open" Argument="&quot;%1&quot;" TargetFile="TriggersNotepad.exe"/>
+          </Extension>
+        </ProgId>
+
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.ini" Name="FriendlyTypeName" Value="Configuration Settings" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.ini\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\ini.ico" Type="string" />
+        <ProgId Id="TriggersNotepad.ini" Description="Configuration Settings">
+          <Extension Id="ini" ContentType="text/plain">
+            <Verb Id="Open" Command="Open" Argument="&quot;%1&quot;" TargetFile="TriggersNotepad.exe"/>
+          </Extension>
+        </ProgId>
+
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.inf" Name="FriendlyTypeName" Value="Setup Information" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.inf\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\inf.ico" Type="string" />
+        <ProgId Id="TriggersNotepad.inf" Description="Setup Information">
+          <Extension Id="inf" ContentType="text/plain">
+            <Verb Id="Open" Command="Open" Argument="&quot;%1&quot;" TargetFile="TriggersNotepad.exe"/>
+          </Extension>
+        </ProgId>
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.inf\shell\Install" Value="Install" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.inf\shell\Install\Command" Value="%SystemRoot%\System32\InfDefaultInstall.exe &quot;%1&quot;" Type="expandable" />
+
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.md" Name="FriendlyTypeName" Value="Markdown Document" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.md\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\md.ico" Type="string" />
+        <ProgId Id="TriggersNotepad.md" Description="Markdown Document">
+          <Extension Id="md" ContentType="text/plain">
+            <Verb Id="Open" Command="Open" Argument="&quot;%1&quot;" TargetFile="TriggersNotepad.exe"/>
+          </Extension>
+        </ProgId>
+
+        <!-- Capabilities keys for Vista/7 "Set Program Access and Defaults" -->
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)" Name="FileAssociation" Value="1" Type="integer"/>
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities" Name="ApplicationDescription" Value="A minimal (yet bulky) replacement for Windows Notepad." Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities" Name="ApplicationIcon" Value="[INSTALLFOLDER]TriggersNotepad.exe,0" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities" Name="ApplicationName" Value="Trigger's Notepad" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\txt.ico" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\MIMEAssociations" Name="text/plain" Value="TriggersNotepad.txt" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\shell\Open\command" Value="&quot;[INSTALLFOLDER]TriggersNotepad.exe&quot; &quot;%1&quot;" Type="string" />
+        <RegistryValue Root="HKLM" Key="Software\RegisteredApplications" Name="TriggersNotepad" Value="$(var.SoftwarePath)\Capabilities" Type="string" />
+
+        <!-- App Paths to support Start,Run -> "myapp" -->
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\TriggersNotepad.exe" Value="[INSTALLFOLDER]TriggersNotepad" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\TriggersNotepad.exe" Name="Path" Value="[INSTALLFOLDER]" Type="string" />
+
+        <!-- Extend to the "open with" list + Win7 jump menu pinning  -->
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\TriggersNotepad.exe\shell\open" Name="FriendlyAppName" Value="Trigger's Notepad" Type="string" />
+        
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\FileAssociations" Name=".txt" Value="TriggersNotepad.txt" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\FileAssociations" Name=".log" Value="TriggersNotepad.log" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\FileAssociations" Name=".ini" Value="TriggersNotepad.ini" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\FileAssociations" Name=".inf" Value="TriggersNotepad.inf" Type="string" />
+        <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)\Capabilities\FileAssociations" Name=".md" Value="TriggersNotepad.md" Type="string" />
+
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\TriggersNotepad.exe\SupportedTypes" Name=".txt" Value="" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\TriggersNotepad.exe\SupportedTypes" Name=".log" Value="" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\TriggersNotepad.exe\SupportedTypes" Name=".ini" Value="" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\TriggersNotepad.exe\SupportedTypes" Name=".inf" Value="" Type="string" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\TriggersNotepad.exe\SupportedTypes" Name=".md" Value="" Type="string" />
+      </Component>
+    </DirectoryRef>
+	</Fragment>
+</Wix>

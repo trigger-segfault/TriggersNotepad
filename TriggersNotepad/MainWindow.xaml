@@ -1,0 +1,523 @@
+﻿<Window x:Class="TriggersNotepad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:TriggersNotepad"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:martin="clr-namespace:Martin"
+        mc:Ignorable="d"
+        Title="Untitled - Trigger's Notepad" Height="450" Width="600" ResizeMode="CanResizeWithGrip" Icon="App.ico" SnapsToDevicePixels="True" UseLayoutRounding="True" Closing="OnClosing">
+    <!--xmlns:markdown="clr-namespace:Markdown.Xaml"-->
+    <Window.Resources>
+
+        <!--<Style TargetType="FlowDocument" x:Key="DocumentStyle">
+            <Setter Property="FontFamily"
+                    Value="Segoe UI" />
+            <Setter Property="TextAlignment"
+                    Value="Left" />
+            <Setter Property="Foreground"
+                    Value="#333" />
+        </Style>
+
+        <Style x:Key="H1Style"
+               TargetType="Paragraph">
+            <Setter Property="FontSize"
+                    Value="32" />
+            <Setter Property="FontWeight"
+                    Value="600" />
+        </Style>
+
+        <Style x:Key="H2Style"
+               TargetType="Paragraph">
+            <Setter Property="FontSize"
+                    Value="24" />
+            <Setter Property="FontWeight"
+                    Value="600" />
+        </Style>
+
+        <Style x:Key="H3Style"
+               TargetType="Paragraph">
+            <Setter Property="FontSize"
+                    Value="18" />
+            <Setter Property="FontWeight"
+                    Value="600" />
+        </Style>
+
+        <Style x:Key="H4Style"
+               TargetType="Paragraph">
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="FontWeight"
+                    Value="600" />
+        </Style>
+
+        <Style x:Key="LinkStyle"
+               TargetType="Hyperlink">
+            <Setter Property="TextDecorations"
+                    Value="None" />
+            <Setter Property="Foreground"
+                    Value="#4078c0" />
+        </Style>
+
+        <Style x:Key="ImageStyle"
+               TargetType="Image">
+            <Setter Property="RenderOptions.BitmapScalingMode"
+                  Value="NearestNeighbor" />
+            <Style.Triggers>
+                <Trigger Property="Tag"
+                       Value="imageright">
+                    <Setter Property="Margin" 
+                          Value="20,0,0,0" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SeparatorStyle"
+             TargetType="Line">
+            <Setter Property="X2"
+                  Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=FlowDocumentScrollViewer}}" />
+            <Setter Property="Stroke"
+                  Value="#FFE7E7E7" />
+            <Setter Property="StrokeThickness"
+                  Value="4" />
+        </Style>
+
+        <markdown:Markdown x:Key="Markdown"
+            DocumentStyle="{StaticResource DocumentStyle}"
+            Heading1Style="{StaticResource H1Style}"
+            Heading2Style="{StaticResource H2Style}"
+            Heading3Style="{StaticResource H3Style}"
+            Heading4Style="{StaticResource H4Style}"
+            LinkStyle="{StaticResource LinkStyle}"
+            ImageStyle="{StaticResource ImageStyle}"
+            SeparatorStyle="{StaticResource SeparatorStyle}"
+            AssetPathRoot="{x:Static sys:Environment.CurrentDirectory}"/>-->
+
+        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource {x:Type ScrollBar}}">
+            <Style.Resources>
+                <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarButtonHeightKey}">32</sys:Double>
+                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}">32</sys:Double>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="XButton" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Image Source="/TriggersNotepad;component/Resources/X.png" />
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image Source="/TriggersNotepad;component/Resources/XRed.png" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="XButton2" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+            <Setter Property="Content">
+                <Setter.Value>
+                    <Image Source="/TriggersNotepad;component/Resources/X.png" />
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image Source="/TriggersNotepad;component/Resources/XRed.png" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type avalonEdit:LineNumberMargin}">
+            <Setter Property="Control.Cursor" Value="Resources/RightCursor.cur"/>
+        </Style>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="New" Executed="OnNew"/>
+        <CommandBinding Command="Open" Executed="OnOpen"/>
+        <CommandBinding Command="Save" Executed="OnSave"/>
+        <CommandBinding Command="local:Commands.MySaveAs" Executed="OnSaveAs"/>
+        <CommandBinding Command="local:Commands.Exit" Executed="OnExitClicked"/>
+
+        <CommandBinding Command="Find" Executed="OnOpenFindBarExecuted"/>
+        <CommandBinding Command="Replace" Executed="OnOpenReplaceBarExecuted"/>
+        <CommandBinding Command="local:Commands.Goto" Executed="OnGoto"/>
+
+        <CommandBinding Command="local:Commands.ToUppercase" CanExecute="CanExecuteToUppercase" Executed="ToUppercase"/>
+        <CommandBinding Command="local:Commands.ToLowercase" CanExecute="CanExecuteToLowercase" Executed="ToLowercase"/>
+
+        <!--<CommandBinding Command="local:Commands.PreviewMarkdown" CanExecute="CanExecutePreviewMarkdown" Executed="OnPreviewMarkdown"/>-->
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        
+    </Window.InputBindings>
+    <DockPanel LastChildFill="True" Margin="0">
+
+        <!--<Menu DockPanel.Dock="Top" x:Name="menu" BorderThickness="0,0,0,1" BorderBrush="#FF141619">-->
+        <Menu DockPanel.Dock="Top" x:Name="menu" BorderThickness="0,0,0,1" BorderBrush="#FF919395">
+            <Menu.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFECEEF1" Offset="0"/>
+                    <GradientStop Color="#FFD6D9DC" Offset="0.852"/>
+                    <GradientStop Color="#FFE6E8EB" Offset="1"/>
+                </LinearGradientBrush>
+            </Menu.Background>
+            <MenuItem Header="File">
+                <MenuItem Header="New" Command="New">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/New.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open..." Command="Open">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Open.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="Save">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Save.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="local:Commands.MySaveAs">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/SaveAs.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem x:Name="menuItemNotepad" Header="Open in Notepad" Click="OnOpenInNotepadClicked" IsEnabled="False">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/InNotepad.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open New Notepad" Click="OnOpenNewNotepadClicked">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Notepad.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem Command="local:Commands.Exit">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Exit.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Command="Undo">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Undo.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="Redo">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Redo.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem Command="Cut">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Cut.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="Copy">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Copy.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="Paste">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Paste.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="Delete">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Delete.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem Command="local:Commands.ToUppercase">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Uppercase.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="local:Commands.ToLowercase">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Lowercase.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem x:Name="menuItemFind" Command="Find">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Find.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemReplace" Command="Replace">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Replace.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemGoto" Command="local:Commands.Goto">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Goto.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem Command="SelectAll">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/SelectAll.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <!--<MenuItem Header="View">
+                <MenuItem x:Name="menuItemMarkdown" IsCheckable="True" Command="local:Commands.PreviewMarkdown">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Markdown.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>-->
+            <MenuItem Header="Format">
+                <MenuItem x:Name="encodingANSI" Header="ANSI" IsCheckable="True" Click="OnANSIEncodingClicked" ToolTip="Windows' Default Codepage">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/ANSI.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <!--<MenuItem x:Name="encodingUTF7" Header="UTF-7" IsCheckable="True" Click="OnUTF7EncodingClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/UTF7.png" />
+                    </MenuItem.Icon>
+                </MenuItem>-->
+                <MenuItem x:Name="encodingUTF8" Header="UTF-8" IsCheckable="True" Click="OnUTF8EncodingClicked" ToolTip="Variable-length Unicode">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/UTF8.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="encodingUTF16LE" Header="UTF-16LE" IsCheckable="True" Click="OnUTF16LEEncodingClicked" ToolTip="Standard Unicode">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/UTF16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="encodingUTF16BE" Header="UTF-16BE" IsCheckable="True" Click="OnUTF16BEEncodingClicked" ToolTip="Big Endian Unicode">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/UTF16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Options">
+                <MenuItem x:Name="menuItemWordWrap" Header="Word Wrap" IsCheckable="True" Click="OnWordWrapClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/WordWrap.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemLineNumbers" Header="Line Numbers" IsCheckable="True" Click="OnLineNumbersClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/LineNumbers.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemSmartIndent" Header="Smart Indentation" IsCheckable="True" Click="OnSmartIndentationClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/SmartIndent.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemTextDragging" Header="Text Dragging" IsCheckable="True" Click="OnTextDraggingClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/TextDragging.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemSpellCheck" Header="Spell Check" IsCheckable="True" Click="OnSpellCheckClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/SpellCheck.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemHyperlinks" Header="Hyperlinks" IsCheckable="True" Click="OnEnableHyperlinksClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Hyperlinks.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Font..." Click="OnFontClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Fonts.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem x:Name="menuItemRealTimeFind" Header="Real-Time Find" IsCheckable="True" IsChecked="True" Click="OnRealTimeFindClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/RealTimeFind.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemAutoCloseGoto" Header="Auto-Close Goto" IsCheckable="True" IsChecked="True" Click="OnAutoCloseGotoClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/CloseGoto.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemDarkMode" Header="Dark Mode" IsCheckable="True" Click="OnDarkModeClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/DarkMode.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemStatusBar" Header="Status Bar" IsCheckable="True" IsChecked="True" Click="OnStatusBarClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/StatusBar.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem Header="Reset Options" Click="OnResetOptionsClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Reset.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="OnAboutClicked">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/About.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Credits" Click="OnCreditsClicked">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Credits.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open Readme" Click="OnOpenReadmeClicked">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Readme.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open Changelog" Click="OnOpenChangelogClicked">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Changelog.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="View on Github" Click="OnGithubClicked">
+                    <MenuItem.Icon>
+                        <Image Source="/TriggersNotepad;component/Resources/Github.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <StatusBar x:Name="statusBar" DockPanel.Dock="Bottom" Margin="0" Height="22" Background="#FFEAECF0" BorderThickness="0,1,0,0" BorderBrush="#FF919395">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition MaxWidth="200" MinWidth="180"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="180" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <Separator Grid.Column="1" Background="#FF979797"/>
+            <StatusBarItem Grid.Column="2">
+                <TextBlock x:Name="textBlockTotals" Text="Lines 1, Chars 0" />
+            </StatusBarItem>
+            <Separator Grid.Column="3" Background="#FF979797"/>
+            <StatusBarItem Grid.Column="4">
+                <TextBlock x:Name="textBlockPosition" Text="Line 1, Col 1" />
+            </StatusBarItem>
+        </StatusBar>
+        <Border x:Name="findBar" FocusManager.IsFocusScope="True" DockPanel.Dock="Bottom" BorderBrush="#FF989EA5" BorderThickness="0,1,0,0" Height="56">
+            <Grid>
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFE7EFFB" Offset="0"/>
+                        <GradientStop Color="#FFDCE4F0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Border BorderBrush="#FF989EA5" BorderThickness="1" HorizontalAlignment="Left" Height="20" Margin="8,5,0,0" VerticalAlignment="Top" Width="163" CornerRadius="1">
+                    <Grid>
+                        <TextBox AcceptsTab="True" x:Name="textBoxFind" BorderThickness="0" IsTabStop="False" Margin="0,0,36,0" TextChanged="OnFindTextBoxChanged" PreviewKeyDown="OnFindPreviewKeyDown" IsEnabled="False"/>
+                        <Button Margin="0,0,18,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Height="18" Width="18" BorderBrush="#FF989EA5" BorderThickness="1,0,0,0" Content="▲" Padding="0,0,0,1" FontSize="9" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="#FFE8F1FC" Click="OnFindPreviousClicked"/>
+                        <Button Margin="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Height="18" Width="18" BorderBrush="#FF989EA5" BorderThickness="1,0,0,0" Content="▼" Padding="0" FontSize="9" Foreground="Black" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="#FFE8F1FC" Click="OnFindNextClicked"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="#FF989EA5" BorderThickness="1" HorizontalAlignment="Left" Height="20" Margin="8,30,0,0" VerticalAlignment="Top" Width="279" CornerRadius="1">
+                    <Grid>
+                        <TextBox AcceptsTab="True" x:Name="textBoxReplace" BorderThickness="0" IsTabStop="False" Margin="0,0,152,0" TextChanged="OnFindTextBoxChanged" PreviewKeyDown="OnReplacePreviewKeyDown" Height="18" VerticalAlignment="Bottom" IsEnabled="False"/>
+                        <Button x:Name="buttonReplaceAll" Margin="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Height="18" Width="76" BorderBrush="#FF989EA5" BorderThickness="1,0,0,0" Content="Replace All" Padding="0,0,0,1" FontSize="11" Foreground="Black" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="#FFE8F1FC" Click="OnReplaceAllClicked"/>
+                        <Button x:Name="buttonReplace" Margin="0,0,76,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Height="18" Width="76" BorderBrush="#FF989EA5" BorderThickness="1,0,0,0" Content="Replace" Padding="0,0,0,1" FontSize="11" Foreground="Black" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="#FFE8F1FC" Click="OnReplaceClicked"/>
+                    </Grid>
+                </Border>
+                <ToggleButton Content="Match Case" HorizontalAlignment="Left" Margin="185,5,0,0" Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}" VerticalAlignment="Top" Height="20" Click="OnMatchCaseClicked" Padding="1" Width="70" IsTabStop="False" Focusable="False"/>
+                <Label x:Name="labelMatches" Content="58 of 61 matches" HorizontalAlignment="Left" Margin="264,2,0,0" VerticalAlignment="Top" Foreground="#FF989EA5"/>
+                <Border BorderBrush="#FF919395" BorderThickness="1" HorizontalAlignment="Right" Height="20" Margin="0,5,18,0" VerticalAlignment="Top" Width="23" CornerRadius="1">
+                    <Button Margin="0" Style="{StaticResource XButton}" BorderBrush="#FF989EA5" BorderThickness="0" Padding="0" FontSize="10" IsTabStop="False" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FFDEE7F3" Click="OnCloseFindBarPressed"/>
+                </Border>
+            </Grid>
+        </Border>
+        <Border x:Name="gotoBar" FocusManager.IsFocusScope="True" DockPanel.Dock="Top" BorderBrush="#FF989EA5" BorderThickness="0,0,0,1" Height="31">
+            <Grid>
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFE7EFFB" Offset="0"/>
+                        <GradientStop Color="#FFDFE7F3" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Border BorderBrush="#FF989EA5" BorderThickness="1" HorizontalAlignment="Left" Height="20" Margin="8,0,0,5" VerticalAlignment="Bottom" Width="203" CornerRadius="1">
+                    <Grid>
+                        <TextBox MaxLength="10" x:Name="textBoxGoto" BorderThickness="0" IsTabStop="False" Margin="0,0,76,0" PreviewKeyDown="OnGotoPreviewKeyDown" Height="18" VerticalAlignment="Bottom" IsEnabled="False" TextChanged="OnGotoTextChanged"/>
+                        <Button x:Name="buttonGoto" Margin="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Height="18" Width="76" BorderBrush="#FF989EA5" BorderThickness="1,0,0,0" Content="Go To" Padding="0,0,0,1" FontSize="11" Foreground="Black" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="#FFE8F1FC" Click="OnGotoClicked" IsCancel="True"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="#FF919395" BorderThickness="1" HorizontalAlignment="Right" Height="20" Margin="0,0,18,5" VerticalAlignment="Bottom" Width="23" CornerRadius="1">
+                    <Button Margin="0" Style="{StaticResource XButton2}" BorderBrush="#FF989EA5" BorderThickness="0" Padding="0" FontSize="10" IsTabStop="False" Focusable="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FFDEE7F3" Click="OnCloseGotoBarPressed"/>
+                </Border>
+            </Grid>
+        </Border>
+        <Grid>
+            <avalonEdit:TextEditor x:Name="textEditor" FontFamily="Lucida Console" FontSize="12.667" TextChanged="OnTextChanged" TextInput="OnTextInput" Loaded="OnWindowLoaded" TextOptions.TextFormattingMode="Display">
+                <avalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Undo">
+                            <MenuItem.Icon>
+                                <Image Source="/TriggersNotepad;component/Resources/Undo.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="Redo">
+                            <MenuItem.Icon>
+                                <Image Source="/TriggersNotepad;component/Resources/Redo.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Margin="0"/>
+                        <MenuItem Command="Cut">
+                            <MenuItem.Icon>
+                                <Image Source="/TriggersNotepad;component/Resources/Cut.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="Copy">
+                            <MenuItem.Icon>
+                                <Image Source="/TriggersNotepad;component/Resources/Copy.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="Paste">
+                            <MenuItem.Icon>
+                                <Image Source="/TriggersNotepad;component/Resources/Paste.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Margin="0"/>
+                        <MenuItem Command="local:Commands.ToUppercase">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/Uppercase.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="local:Commands.ToLowercase">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/Lowercase.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </avalonEdit:TextEditor.ContextMenu>
+                <i:Interaction.Behaviors>
+                    <martin:SpellCheckerBehavior />
+                </i:Interaction.Behaviors>
+            </avalonEdit:TextEditor>
+            <!--<FlowDocumentScrollViewer x:Name="markdownViewer" Visibility="Hidden" />-->
+        </Grid>
+    </DockPanel>
+</Window>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?include Defines.wxi ?>
+  <Product Id="*" Name="Trigger's Notepad" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Trigger's Tools &amp; Games" UpgradeCode="$(var.ProductUpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Icon Id="ProductIcon" SourceFile="$(var.TriggersNotepad.ProjectDir)App.ico" />
+    <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
+    <Property Id="ARPHELPLINK" Value="$(var.ProductURL)" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
+    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Trigger's Notepad is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!--Include Custom UI-->
+    <UIRef Id="MyWixUI" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    
+    <!--Launch Trigger's Notepad after install-->
+    <Property Id="WixShellExecTarget" Value="[#TriggersNotepad.exe]" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+    <!--Basic Features-->
+    <Feature Id="BasicInstallFeature" Title="Basic Installation" Description="The basic essentials for running Trigger's Notepad." Level="2">
+      <ComponentRef Id="RootFilesComponent" />
+      <ComponentRef Id="DictionaryFilesComponent" />
+    </Feature>
+    <Feature Id="FileAssociationInstallFeature" Title="File Association Installation" Description="Trigger's Notepad essentials as well as file association." Level="1">
+      <ComponentRef Id="RootFilesComponent" />
+      <ComponentRef Id="DictionaryFilesComponent" />
+      <ComponentRef Id="BasicFileAssociation" />
+    </Feature>
+    <!--File Association Icon Features-->
+    <Feature Id="Win7IconsFeature" Title="Windows 7 Icons" Description="File Associated types will use Windows 7 style icons." Level="1">
+      <ComponentRef Id="Win7IconFilesComponent" />
+    </Feature>
+    <Feature Id="Win10IconsFeature" Title="Windows 10 Icons" Description="File Associated types will use Windows 10 style icons." Level="1">
+      <ComponentRef Id="Win10IconFilesComponent" />
+    </Feature>
+    <!--Shortcut Features-->
+    <Feature Id="DesktopShortcutFeature" Title="Desktop Shortcut" Description="Creates a shortcut for Trigger's PC on the desktop." Level="1">
+      <ComponentRef Id="DesktopShortcutComponent" />
+    </Feature>
+    <Feature Id="StartMenuShortcutFeature" Title="Start Menu Shortcut" Description="Creates a shortcut for Trigger's PC in the start menu." Level="1">
+      <ComponentRef Id="StartMenuShortcutComponent" />
+    </Feature>
+
+    <!--WixUI Variables and Properties-->
+    <WixVariable Id="WixUIBannerBmp" Value="Resources\Banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Resources\Dialog.bmp" />
+    <WixVariable Id="WixUIInfoIco" Value="Resources\Info.ico" />
+    <WixVariable Id="WixUICostingPopupOptOut" Value="0" />
+
+    <Property Id="WIXUI_INSTALLDIR">INSTALLFOLDER</Property>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Trigger's Notepad" />
+    <Property Id="CHECKBOX_FILE_ASSOCIATION" Secure="yes" Value="1" />
+    <Property Id="CHECKBOX_WIN10_ICONS" Secure="yes" Value="1" />
+    <Property Id="CHECKBOX_DESKTOP_SHORTCUT" Secure="yes" Value="1" />
+    <Property Id="CHECKBOX_START_MENU_SHORTCUT" Secure="yes" Value="1" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Secure="yes" Value="1"/>
+
+  </Product>
+</Wix>

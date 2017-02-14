@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <UI>
+            <Dialog Id="MyFeatureDlg" Width="370" Height="270" Title="Features">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                    <Publish Event="AddLocal" Value="Win7IconsFeature">CHECKBOX_WIN10_ICONS = 1</Publish>
+                    <Publish Event="AddLocal" Value="Win10IconsFeature">CHECKBOX_WIN10_ICONS = 2</Publish>
+                    <Publish Event="Remove" Value="Win10IconsFeature">CHECKBOX_WIN10_ICONS = 1</Publish>
+                    <Publish Event="Remove" Value="Win7IconsFeature">CHECKBOX_WIN10_ICONS = 2</Publish>
+                </Control>
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+                </Control>
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Enable or disable optional features." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="Feature Selection" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Type="GroupBox" Id="Shortcuts" Width="316" Height="62" X="28" Y="158" Text="Shortcuts" />
+                <Control Id="DesktopShortcut" Type="CheckBox" X="38" Y="176" Width="142" Height="13" Text="Create Desktop Shortcut" CheckBoxValue="1" Property="CHECKBOX_DESKTOP_SHORTCUT">
+                    <Publish Event="AddLocal" Value="DesktopShortcutFeature">CHECKBOX_DESKTOP_SHORTCUT = 1</Publish>
+                    <Publish Event="Remove" Value="DesktopShortcutFeature"><![CDATA[CHECKBOX_DESKTOP_SHORTCUT <> 1]]></Publish>
+                </Control>
+                <Control Id="StartMenuShortcut" Type="CheckBox" X="38" Y="199" Width="145" Height="13" Text="Create Start Menu Shortcut" CheckBoxValue="1" Property="CHECKBOX_START_MENU_SHORTCUT">
+                    <Publish Event="AddLocal" Value="StartMenuShortcutFeature">CHECKBOX_START_MENU_SHORTCUT = 1</Publish>
+                    <Publish Event="Remove" Value="StartMenuShortcutFeature"><![CDATA[CHECKBOX_START_MENU_SHORTCUT <> 1]]></Publish>
+                </Control>
+                <Control Type="GroupBox" Id="FileAssociation" Width="316" Height="84" X="28" Y="56" Text="File Association" />
+                <Control Type="RadioButtonGroup" Property="CHECKBOX_WIN10_ICONS" Id="FileTypeIcons" Width="294" Height="40" X="38" Y="94">
+                    <RadioButtonGroup Property="CHECKBOX_WIN10_ICONS">
+                        <RadioButton Text="Windows 7 Style Icons" Height="17" Value="1" Width="200" X="0" Y="0" />
+                        <RadioButton Text="Windows 10 Style Icons" Height="17" Value="2" Width="200" X="0" Y="22" />
+                    </RadioButtonGroup>
+                </Control>
+              <Control Type="CheckBox" Id="FileAssociationCheckBox" Width="289" Height="13" X="38" Y="75" CheckBoxValue="1" Property="CHECKBOX_FILE_ASSOCIATION" Text="Associate Text Files with Trigger's Notepad">
+                <Publish Event="AddLocal" Value="FileAssociationInstallFeature">CHECKBOX_FILE_ASSOCIATION = 1</Publish>
+                <Publish Event="AddLocal" Value="BasicInstallFeature"><![CDATA[CHECKBOX_FILE_ASSOCIATION <> 1]]></Publish>
+                <Publish Event="Remove" Value="BasicInstallFeature">CHECKBOX_FILE_ASSOCIATION = 1</Publish>
+                <Publish Event="Remove" Value="FileAssociationInstallFeature"><![CDATA[CHECKBOX_FILE_ASSOCIATION <> 1]]></Publish>
+              </Control>
+            </Dialog>
+        </UI>
+    </Fragment>
+</Wix>
