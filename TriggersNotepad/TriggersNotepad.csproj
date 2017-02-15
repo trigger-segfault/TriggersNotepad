@@ -213,7 +213,6 @@
     <Resource Include="Resources\ANSI.png" />
     <Resource Include="Resources\Credits.png" />
     <Resource Include="Resources\RightCursor.cur" />
-    <None Include="Todo.txt" />
     <Resource Include="Resources\SmartIndent.png" />
     <Resource Include="Resources\Preview.png" />
     <Resource Include="Resources\RealTimeFind.png" />

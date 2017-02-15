@@ -2,6 +2,10 @@
 | Trigger's Notepad              |
 |================================/
 
+Author: Robert Jordan (trigger_death)
+GitHub: https://github.com/trigger-death/TriggersNotepad
+Version: 1.0.0.0 (2/14/17)
+
 Features
 --------------------------------
 Open in Notepad:
@@ -17,14 +21,16 @@ Lowercase:
 
 Find:
 * Opens the find bar at the bottom of the window.
-* Press Enter to find next result while editing the find text.
+* Press Enter to find the next result while editing the find text.
 * The Real-Time find feature in options will automatically goto the next valid
    result while typing.
 Replace:
 * Opens the replace bar at the bottom of the window.
 * Press Enter while editing the replace text to either navigate to a result or
    replace the current find result.
-
+Goto Line:
+* Opens the goto bar at the top of the window.
+* Press enter to goto the current line.
 
 Format
 --------------------------------

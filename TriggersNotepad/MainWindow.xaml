@@ -392,7 +392,7 @@
                         <Image Source="/TriggersNotepad;component/Resources/Changelog.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="View on Github" Click="OnGithubClicked">
+                <MenuItem Header="View on GitHub" Click="OnGithubClicked">
                     <MenuItem.Icon>
                         <Image Source="/TriggersNotepad;component/Resources/Github.png" />
                     </MenuItem.Icon>

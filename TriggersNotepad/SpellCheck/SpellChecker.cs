@@ -157,8 +157,8 @@ namespace Martin
             textDecorationCollection = new TextDecorationCollection();
             textDecorationCollection.Add(new TextDecoration()
             {
-                Pen = new Pen { Thickness = 2, DashStyle = DashStyles.Dot, Brush = new SolidColorBrush(Colors.Red) },
-                PenThicknessUnit = TextDecorationUnit.FontRecommended
+                Pen = new Pen { Thickness = 1, DashStyle = DashStyles.Dash, Brush = new SolidColorBrush(Colors.Red) },
+                PenThicknessUnit = TextDecorationUnit.Pixel
             });
         }
 

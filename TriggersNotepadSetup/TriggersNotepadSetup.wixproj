@@ -54,7 +54,7 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localizations\EnUS.wxl" />
+    <EmbeddedResource Include="Localizations\en-us.wxl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components" />
