@@ -7,12 +7,21 @@ I am always looking for a better icon for Trigger's Notepad. If you have a sugge
 
 ### [Credits](https://github.com/trigger-death/TriggersNotepad/wiki/Credits) | [Image Album](http://imgur.com/a/jFj2q)
 
+## Requirements for Running
+* .NET Framwork 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
+
+## Requirements for Source Code
+* AvalonEdit for the text editor. | [NuGet Package](https://www.nuget.org/packages/AvalonEdit)
+* NHunspell for spellcheck. | [NuGet Package](https://www.nuget.org/packages/NHunspell/)
+* WiX Toolset for the installer | [Installer](http://wixtoolset.org/)
+
+
 ## Pros and Cons
 There are some tradeoffs to using Trigger's PC so keep that in mind when deciding if you'd like to use it.
 
 ### Pros
 * Word wrap no longer saves the wrapped text with new lines.
-* Undo is limited to one use only.
+* Undo is no longer limited to one use only.
 * Save As now has a hotkey of Ctrl+Shift+S.
 * Selected text can now be dragged like in most text editors.
 * Spell Check is now available, so there's no need to copy the word somewhere else to check.
