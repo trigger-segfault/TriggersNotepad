@@ -39,4 +39,4 @@ There are some tradeoffs to using Trigger's PC so keep that in mind when decidin
 
 ### Cons (for Other Editors)
 * Dragging selected text is a little glitchy with the cursor. It also doesn't allow you to scroll while dragging. Blame AvalonEdit for this.
-* No syntadx highlighting. This tool was never designed to replace programs like Notepad++.
+* No syntax highlighting. This tool was never designed to replace programs like Notepad++.
