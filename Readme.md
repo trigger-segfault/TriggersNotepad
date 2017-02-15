@@ -1,5 +1,11 @@
-# TriggersNotepad
-My take on a minimal (yet bulky) replacement for Windows Notepad. Trigger's Notepad improves most of the broken features in Windows Notepad and also adds plenty of new and useful features. This tool is not designed to replace programs with syntax highlighting like Notepad++. Its main goal is to be a basic text editor designed with one-window-per-file.
+# Trigger's Notepad ![App Icon](http://i.imgur.com/uDcNXy5.png)
+My take on a minimal (yet bulky) replacement for Windows Notepad. Trigger's Notepad improves most of the broken features in Windows Notepad and also adds plenty of new and useful features. This tool is not designed to replace programs with syntax highlighting like Notepad++. Its main goal is to be a basic text editor designed with one-window-per-file in mind.
+
+![Preview](http://i.imgur.com/rzAzWPb.png)
+
+I am always looking for a better icon for Trigger's Notepad. If you have a suggestion, I'd love to hear it.
+
+### [Credits](https://github.com/trigger-death/TriggersNotepad/wiki/Credits) | [Image Album](http://imgur.com/a/jFj2q)
 
 ## Pros and Cons
 There are some tradeoffs to using Trigger's PC so keep that in mind when deciding if you'd like to use it.
@@ -28,6 +34,7 @@ There are some tradeoffs to using Trigger's PC so keep that in mind when decidin
 * Because of WPF font rendering, ASCII art using full-block characters won't look right due to them not connecting together.
 * Print and Page Setup were removed. I don't expect people really use those in basic text editors.
 * Insert Date/Time was never implemented. If there is a demand to implement it them I can easily do that.
+* Scrollbar buttons are almost twice as large as normal to give the minimum scroll thumb size the same size as Windows Notepad. You get used to it.
 
 ### Cons (for Other Editors)
 * Dragging selected text is a little glitchy with the cursor. It also doesn't allow you to scroll while dragging. Blame AvalonEdit for this.
