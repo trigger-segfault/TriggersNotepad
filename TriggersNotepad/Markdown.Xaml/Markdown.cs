@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Cache;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -396,14 +397,24 @@ namespace Markdown.Xaml
                     url = System.IO.Path.Combine(AssetPathRoot ?? string.Empty, url);
                 }
 
-                imgSource = new BitmapImage(new Uri(url, UriKind.RelativeOrAbsolute));
+				imgSource = new BitmapImage();
+				imgSource.BeginInit();
+				imgSource.CacheOption = BitmapCacheOption.None;
+				imgSource.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.BypassCache);
+				imgSource.CacheOption = BitmapCacheOption.OnLoad;
+				imgSource.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+				imgSource.UriSource = new Uri(url);
+				imgSource.EndInit();
+
+				// new BitmapImage(new Uri(url, UriKind.RelativeOrAbsolute));
             }
             catch (Exception)
             {
                 return new Run("!" + url) { Foreground = Brushes.Red };
             }
 
-            Image image = new Image { Source = imgSource, Tag = linkText };
+
+			Image image = new Image { Source = imgSource, Tag = linkText };
             if (ImageStyle == null)
             {
                 image.Margin = new Thickness(0);

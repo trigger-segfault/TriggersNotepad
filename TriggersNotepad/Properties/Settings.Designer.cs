@@ -226,5 +226,41 @@ namespace TriggersNotepad.Properties {
                 this["CloseGoto"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CloseOptions {
+            get {
+                return ((bool)(this["CloseOptions"]));
+            }
+            set {
+                this["CloseOptions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ANSI")]
+        public string EncodingDefault {
+            get {
+                return ((string)(this["EncodingDefault"]));
+            }
+            set {
+                this["EncodingDefault"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoPreviewMarkdown {
+            get {
+                return ((bool)(this["AutoPreviewMarkdown"]));
+            }
+            set {
+                this["AutoPreviewMarkdown"] = value;
+            }
+        }
     }
 }

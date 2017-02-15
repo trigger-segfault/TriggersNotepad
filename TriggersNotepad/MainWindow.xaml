@@ -8,12 +8,12 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:martin="clr-namespace:Martin"
+        xmlns:markdown="clr-namespace:Markdown.Xaml"
         mc:Ignorable="d"
         Title="Untitled - Trigger's Notepad" Height="450" Width="600" ResizeMode="CanResizeWithGrip" Icon="App.ico" SnapsToDevicePixels="True" UseLayoutRounding="True" Closing="OnClosing">
-    <!--xmlns:markdown="clr-namespace:Markdown.Xaml"-->
     <Window.Resources>
 
-        <!--<Style TargetType="FlowDocument" x:Key="DocumentStyle">
+        <Style TargetType="FlowDocument" x:Key="DocumentStyle">
             <Setter Property="FontFamily"
                     Value="Segoe UI" />
             <Setter Property="TextAlignment"
@@ -60,6 +60,11 @@
                     Value="None" />
             <Setter Property="Foreground"
                     Value="#4078c0" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="ImageStyle"
@@ -94,7 +99,7 @@
             LinkStyle="{StaticResource LinkStyle}"
             ImageStyle="{StaticResource ImageStyle}"
             SeparatorStyle="{StaticResource SeparatorStyle}"
-            AssetPathRoot="{x:Static sys:Environment.CurrentDirectory}"/>-->
+            AssetPathRoot="{x:Static sys:Environment.CurrentDirectory}"/>
 
         <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource {x:Type ScrollBar}}">
             <Style.Resources>
@@ -152,7 +157,14 @@
         <CommandBinding Command="local:Commands.ToUppercase" CanExecute="CanExecuteToUppercase" Executed="ToUppercase"/>
         <CommandBinding Command="local:Commands.ToLowercase" CanExecute="CanExecuteToLowercase" Executed="ToLowercase"/>
 
-        <!--<CommandBinding Command="local:Commands.PreviewMarkdown" CanExecute="CanExecutePreviewMarkdown" Executed="OnPreviewMarkdown"/>-->
+        <CommandBinding Command="local:Commands.TabsToSpaces" CanExecute="CanExecuteTabsToSpaces" Executed="ExecuteTabsToSpaces"/>
+        <CommandBinding Command="local:Commands.SpacesToTabs" CanExecute="CanExecuteTabsToSpaces" Executed="ExecuteSpacesToTabs"/>
+        
+        <CommandBinding Command="local:Commands.ZoomIn" CanExecute="CanExecuteZoomIn" Executed="ExecuteZoomIn"/>
+        <CommandBinding Command="local:Commands.ZoomOut" CanExecute="CanExecuteZoomOut" Executed="ExecuteZoomOut"/>
+        <CommandBinding Command="local:Commands.ResetZoom" CanExecute="CanExecuteResetZoom" Executed="ExecuteResetZoom"/>
+
+        <CommandBinding Command="local:Commands.PreviewMarkdown" CanExecute="CanExecutePreviewMarkdown" Executed="OnPreviewMarkdown"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         
@@ -250,6 +262,16 @@
                         <Image Source="Resources/Lowercase.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Command="local:Commands.TabsToSpaces">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/ConvertTab.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="local:Commands.SpacesToTabs">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/ConvertSpace.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator Margin="0"/>
                 <MenuItem x:Name="menuItemFind" Command="Find">
                     <MenuItem.Icon>
@@ -273,14 +295,30 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <!--<MenuItem Header="View">
+            <MenuItem Header="View">
+                <MenuItem x:Name="menuItemZoomIn" Command="local:Commands.ZoomIn" InputGestureText="Ctrl+Num+">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/PlusZoom.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemZoomOut" Command="local:Commands.ZoomOut" InputGestureText="Ctrl+Num-">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/MinusZoom.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="menuItemResetZoom" Command="local:Commands.ResetZoom">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/ResetZoom.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
                 <MenuItem x:Name="menuItemMarkdown" IsCheckable="True" Command="local:Commands.PreviewMarkdown">
                     <MenuItem.Icon>
                         <Image Source="Resources/Markdown.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-            </MenuItem>-->
-            <MenuItem Header="Format">
+            </MenuItem>
+            <MenuItem x:Name="menuFormat" Header="Format">
                 <MenuItem x:Name="encodingANSI" Header="ANSI" IsCheckable="True" Click="OnANSIEncodingClicked" ToolTip="Windows' Default Codepage">
                     <MenuItem.Icon>
                         <Image Source="Resources/ANSI.png" />
@@ -304,6 +342,12 @@
                 <MenuItem x:Name="encodingUTF16BE" Header="UTF-16BE" IsCheckable="True" Click="OnUTF16BEEncodingClicked" ToolTip="Big Endian Unicode">
                     <MenuItem.Icon>
                         <Image Source="Resources/UTF16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Margin="0"/>
+                <MenuItem Header="Set as Default" Click="OnSetEncodingDefaultClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/EncodingDefault.png" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -344,6 +388,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator Margin="0"/>
+                <MenuItem x:Name="menuItemAutoPreviewMarkdown" Header="Auto-View Markdown" IsCheckable="True" Click="OnAutoPreviewMarkdownClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Markdown.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem x:Name="menuItemRealTimeFind" Header="Real-Time Find" IsCheckable="True" IsChecked="True" Click="OnRealTimeFindClicked">
                     <MenuItem.Icon>
                         <Image Source="Resources/RealTimeFind.png" />
@@ -365,6 +414,16 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator Margin="0"/>
+                <MenuItem x:Name="menuItemCloseOptions" Header="Save Options on Close" IsCheckable="True" IsChecked="True" Click="OnCloseOptionsClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/CloseOptions.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save Options" Click="OnSaveOptionsClicked">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/SaveOptions.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Reset Options" Click="OnResetOptionsClicked">
                     <MenuItem.Icon>
                         <Image Source="Resources/Reset.png" />
@@ -406,9 +465,11 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition MaxWidth="200" MinWidth="180"/>
+                            <ColumnDefinition Width="180"/>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="90" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -420,6 +481,10 @@
             <Separator Grid.Column="3" Background="#FF979797"/>
             <StatusBarItem Grid.Column="4">
                 <TextBlock x:Name="textBlockPosition" Text="Line 1, Col 1" />
+            </StatusBarItem>
+            <Separator Grid.Column="5" Background="#FF979797"/>
+            <StatusBarItem Grid.Column="6">
+                <TextBlock x:Name="textBlockZoom" Text="View 100%" />
             </StatusBarItem>
         </StatusBar>
         <Border x:Name="findBar" FocusManager.IsFocusScope="True" DockPanel.Dock="Bottom" BorderBrush="#FF989EA5" BorderThickness="0,1,0,0" Height="56">
@@ -471,7 +536,7 @@
             </Grid>
         </Border>
         <Grid>
-            <avalonEdit:TextEditor x:Name="textEditor" FontFamily="Lucida Console" FontSize="12.667" TextChanged="OnTextChanged" TextInput="OnTextInput" Loaded="OnWindowLoaded" TextOptions.TextFormattingMode="Display">
+            <avalonEdit:TextEditor x:Name="textEditor" FontFamily="Lucida Console" FontSize="12.667" TextChanged="OnTextChanged" TextInput="OnTextInput" Loaded="OnWindowLoaded" TextOptions.TextFormattingMode="Display" PreviewMouseWheel="OnPreviewMouseWheel">
                 <avalonEdit:TextEditor.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="Undo">
@@ -517,7 +582,7 @@
                     <martin:SpellCheckerBehavior />
                 </i:Interaction.Behaviors>
             </avalonEdit:TextEditor>
-            <!--<FlowDocumentScrollViewer x:Name="markdownViewer" Visibility="Hidden" />-->
+            <FlowDocumentScrollViewer x:Name="markdownViewer" Visibility="Hidden" PreviewMouseWheel="OnPreviewMarkdownPreviewScroll"/>
         </Grid>
     </DockPanel>
 </Window>

@@ -268,4 +268,28 @@
   <data name="AppError" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AppError.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CloseOptions" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CloseOptions.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SaveOptions" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SaveOptions.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MinusZoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MinusZoom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PlusZoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PlusZoom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ResetZoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ResetZoom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ConvertSpace" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ConvertSpace.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ConvertTab" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ConvertTab.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EncodingDefault" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\EncodingDefault.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

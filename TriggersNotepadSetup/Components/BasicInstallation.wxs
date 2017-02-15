@@ -7,8 +7,9 @@
         <File Id="TriggersNotepad.exe" Source="$(var.TriggersNotepad.TargetDir)TriggersNotepad.exe" KeyPath="yes" />
         <File Id="TriggersNotepad.exe.config" Source="$(var.TriggersNotepad.TargetDir)TriggersNotepad.exe.config" />
         
-        <File Id="Readme.txt" Source="$(var.TriggersNotepad.TargetDir)Readme.txt" />
-        <File Id="Changelog.txt" Source="$(var.TriggersNotepad.TargetDir)Changelog.txt" />
+        <File Id="Readme.md" Source="$(var.TriggersNotepad.TargetDir)Readme.md" />
+        <File Id="Changelog.md" Source="$(var.TriggersNotepad.TargetDir)Changelog.md" />
+        <File Id="App.png" Source="$(var.TriggersNotepad.TargetDir)App.png" />
         
         <File Id="ICSharpCode.AvalonEdit.dll" Source="$(var.TriggersNotepad.TargetDir)ICSharpCode.AvalonEdit.dll" />
         <File Id="NHunspell.dll" Source="$(var.TriggersNotepad.TargetDir)NHunspell.dll" />

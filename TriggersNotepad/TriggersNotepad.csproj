@@ -93,8 +93,9 @@
     <Compile Include="ErrorMessageBox.xaml.cs">
       <DependentUpon>ErrorMessageBox.xaml</DependentUpon>
     </Compile>
-    <None Include="Markdown.Xaml\Markdown.cs" />
-    <None Include="Markdown.Xaml\TextToFlowDocumentConverter.cs" />
+    <Compile Include="FlowDocumentExtensions.cs" />
+    <Compile Include="Markdown.Xaml\Markdown.cs" />
+    <Compile Include="Markdown.Xaml\TextToFlowDocumentConverter.cs" />
     <Compile Include="NoIndentationStrategy.cs" />
     <Compile Include="ColorizeSearchResults.cs" />
     <Compile Include="SpellCheck\SpellChecker.cs" />
@@ -183,11 +184,26 @@
     <Resource Include="Resources\Fonts.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Readme.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Resources\ConvertTab.png" />
+    <Resource Include="Resources\ConvertSpace.png" />
+    <Resource Include="Resources\EncodingDefault.png" />
+    <Resource Include="Resources\ResetZoom.png" />
+    <Resource Include="Resources\PlusZoom.png" />
+    <Resource Include="Resources\MinusZoom.png" />
+    <Resource Include="Resources\SaveOptions.png" />
+    <Resource Include="Resources\CloseOptions.png" />
     <Resource Include="Resources\AppError.ico" />
     <Resource Include="Resources\CloseGoto.png" />
     <Resource Include="Resources\Reset.png" />
     <Resource Include="Resources\Changelog.png" />
-    <None Include="Changelog.txt">
+    <None Include="Changelog.txt" />
+    <None Include="Changelog.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="App.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Hunspellx64.dll">
@@ -200,9 +216,7 @@
     <Resource Include="Resources\QuestionIcon.png" />
     <Resource Include="Resources\InfoIcon.png" />
     <Resource Include="Resources\ErrorIcon.png" />
-    <None Include="Readme.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Readme.txt" />
     <Resource Include="Resources\TextDragging.png" />
     <Resource Include="Resources\DarkMode.png" />
     <Resource Include="Resources\Markdown.png" />

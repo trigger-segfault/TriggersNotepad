@@ -5,26 +5,65 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TriggersNotepad"
         mc:Ignorable="d"
-        Title="Credits" Height="286" Width="326" Background="#FFECEEF1" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="Resources/Credits.png">
+        Title="Credits" Height="326" Width="326" Background="#FFECEEF1" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="Resources/Credits.png">
     <Grid>
         <Button x:Name="button" Content="OK" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="80" IsDefault="True" Click="OnOKClicked"/>
         <StackPanel Margin="10,10,10,37">
             <TextBlock TextWrapping="Wrap" Padding="5">
                 Text editor powered by <Hyperlink NavigateUri="http://avalonedit.net/" RequestNavigate="OnRequestNavigate">AvalonEdit</Hyperlink>.
             </TextBlock>
-            <Separator Height="11" Margin="20,0" VerticalAlignment="Center"/>
+            <Separator Height="11" Margin="20,0">
+                <Separator.Background>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#FFA0A0A0" Offset="0"/>
+                        <GradientStop Color="#00A0A0A0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Separator.Background>
+            </Separator>
             <TextBlock TextWrapping="Wrap" Padding="5">
                 Spell check powered by <Hyperlink NavigateUri="https://github.com/martinkirsche/AsYouTypeSpellChecker" RequestNavigate="OnRequestNavigate">As You Type Spell Checker</Hyperlink>.
             </TextBlock>
-            <Separator Height="11" Margin="20,0" VerticalAlignment="Center"/>
+            <Separator Height="11" Margin="20,0">
+                <Separator.Background>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#FFA0A0A0" Offset="0"/>
+                        <GradientStop Color="#00A0A0A0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Separator.Background>
+            </Separator>
             <TextBlock TextWrapping="Wrap" Padding="5">
                 Font dialog powered by <Hyperlink NavigateUri="https://blogs.msdn.microsoft.com/text/2006/10/31/sample-font-chooser/" RequestNavigate="OnRequestNavigate">Sample Font Chooser</Hyperlink>.
             </TextBlock>
-            <Separator Height="11" Margin="20,0"/>
+            <Separator Height="11" Margin="20,0">
+                <Separator.Background>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#FFA0A0A0" Offset="0"/>
+                        <GradientStop Color="#00A0A0A0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Separator.Background>
+            </Separator>
             <TextBlock TextWrapping="Wrap" Padding="5">
                 All icons from or modified from <Hyperlink NavigateUri="http://p.yusukekamiyamane.com/" RequestNavigate="OnRequestNavigate">Fugue Icon Pack</Hyperlink>.
             </TextBlock>
-            <Separator Height="11" Margin="20,0"/>
+            <Separator Height="11" Margin="20,0">
+                <Separator.Background>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#FFA0A0A0" Offset="0"/>
+                        <GradientStop Color="#00A0A0A0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Separator.Background>
+            </Separator>
+            <TextBlock TextWrapping="Wrap" Padding="5">
+                Markdown preview powered by  <Hyperlink NavigateUri="https://github.com/theunrepentantgeek/Markdown.XAML/" RequestNavigate="OnRequestNavigate">Markdown.XAML</Hyperlink>.
+            </TextBlock>
+            <Separator Height="11" Margin="20,0">
+                <Separator.Background>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Color="#FFA0A0A0" Offset="0"/>
+                        <GradientStop Color="#00A0A0A0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Separator.Background>
+            </Separator>
             <TextBlock TextWrapping="Wrap" Padding="5">
                 Application icon from the 3D Blue Icon set by MadOyster.
                 It doesn't seem to exist online anymore.

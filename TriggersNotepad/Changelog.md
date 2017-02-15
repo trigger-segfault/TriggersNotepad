@@ -1,17 +1,16 @@
-﻿/================================|
-| Changelog                      |
-|================================/
+# Trigger's Notepad Changelog ![Icon](App.png)
 
-Minor Additions 1.0.1.0 2/15/17
---------------------------------
-Fixes:
+## Minor Additions & Markdown 1.0.1.0 - 2/15/17
+
+#### Fixes:
 * Current line and column are now updated when finding.
 * Replace/Uppercase/Lowercase etc can now be undone.
 
-Changes:
+#### Changes:
 * Changed command line "/r" to "/t" for loading text since it makes more sense.
+* Readme and Changelog are now displayed in Markdown.
 
-New Features:
+#### New Features:
 * Command line "/md" for auto-viewing markdown
 * Markdown viewing support
 * Text editor zoom
@@ -21,16 +20,17 @@ New Features:
 * View Menu
   * Zoom In/Zoom Out/Reset Zoom
   * Preview Markdown
-* Change Encoding to Default
+* Format
+  * Change Encoding to Default
 * Options Menu
   * Added Auto-View Markdown
   * Save Options on Close
   * Save Options Now
 
 
-Initial Release 1.0.0.0 2/14/17
---------------------------------
-New Features:
+## Initial Release 1.0.0.0 - 2/14/17
+
+#### New Features:
 * File Menu
   * New/Open/Save/Save As
   * Open in Notepad/Open New Notepad

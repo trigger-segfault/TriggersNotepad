@@ -24,10 +24,28 @@ namespace TriggersNotepad {
 			"Exit", "Exit", typeof(Commands),
 			new InputGestureCollection() { new KeyGesture(Key.W, ModifierKeys.Control) }
 		);
-		/*public static readonly RoutedUICommand PreviewMarkdown = new RoutedUICommand(
+		public static readonly RoutedUICommand ZoomIn = new RoutedUICommand(
+			"Zoom In", "ZoomIn", typeof(Commands),
+			new InputGestureCollection() { new KeyGesture(Key.Add, ModifierKeys.Control) }
+		);
+		public static readonly RoutedUICommand ZoomOut = new RoutedUICommand(
+			"Zoom Out", "ZoomOut", typeof(Commands),
+			new InputGestureCollection() { new KeyGesture(Key.Subtract, ModifierKeys.Control) }
+		);
+		public static readonly RoutedUICommand ResetZoom = new RoutedUICommand(
+			"Reset Zoom", "ResetZoom", typeof(Commands),
+			new InputGestureCollection() { new KeyGesture(Key.B, ModifierKeys.Control) }
+		);
+		public static readonly RoutedUICommand TabsToSpaces = new RoutedUICommand(
+			"Tabs to Spaces", "TabsToSpaces", typeof(Commands)
+		);
+		public static readonly RoutedUICommand SpacesToTabs = new RoutedUICommand(
+			"Spaces to Tabs", "SpacesToTabs", typeof(Commands)
+		);
+		public static readonly RoutedUICommand PreviewMarkdown = new RoutedUICommand(
 			"Preview Markdown", "PreviewMarkdown", typeof(Commands),
 			new InputGestureCollection() { new KeyGesture(Key.Q, ModifierKeys.Control) }
-		);*/
+		);
 
 	}
 }

@@ -16,9 +16,14 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Reflection;
 using TriggersNotepad.Properties;
-//using Markdown.Xaml;
+using Markdown.Xaml;
 
 using IOPath = System.IO.Path;
+using System.Windows.Documents;
+using System.Diagnostics;
+using ICSharpCode.AvalonEdit;
+using System.Windows.Threading;
+using System.Globalization;
 
 namespace TriggersNotepad {
 	/// <summary>
@@ -34,6 +39,17 @@ namespace TriggersNotepad {
 		bool smartIndent;
 		bool darkMode;
 		bool closeGoto;
+		bool closeOptions;
+		bool autoPreviewMarkdown;
+		string encodingDefault;
+		int tabSize;
+
+		// Zoom
+		double fontSize;
+		int fontSizeDelta;
+
+		// Markdown
+		bool viewingMarkdown;
 
 		// File Info
 		string lastDirectory;
@@ -85,6 +101,9 @@ namespace TriggersNotepad {
 			searching = false;
 			matchCase = false;
 			updateSearch = 0;
+			fontSizeDelta = 0;
+			tabSize = 4;
+
 
 			InitializeComponent();
 
@@ -121,6 +140,7 @@ namespace TriggersNotepad {
 			// Load Settings
 			textEditor.FontFamily = (FontFamily)new FontFamilyConverter().ConvertFromString(Settings.Default.FontFamily);
 			textEditor.FontSize = Settings.Default.FontSize;
+			fontSize = textEditor.FontSize;
 			textEditor.FontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(Settings.Default.FontWeight);
 			textEditor.FontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(Settings.Default.FontStyle);
 			textEditor.FontStretch = (FontStretch)new FontStretchConverter().ConvertFromString(Settings.Default.FontStretch);
@@ -135,6 +155,9 @@ namespace TriggersNotepad {
 			textEditor.Options.EnableTextDragDrop = Settings.Default.TextDragging;
 			darkMode = Settings.Default.DarkMode;
 			closeGoto = Settings.Default.CloseGoto;
+			closeOptions = Settings.Default.CloseOptions;
+			encodingDefault = Settings.Default.EncodingDefault;
+			autoPreviewMarkdown = Settings.Default.AutoPreviewMarkdown;
 
 			this.Width = Settings.Default.WindowWidth;
 			this.Height = Settings.Default.WindowHeight;
@@ -157,21 +180,36 @@ namespace TriggersNotepad {
 			if (darkMode)
 				EnableDarkMode();
 			menuItemAutoCloseGoto.IsChecked = closeGoto;
+			menuItemCloseOptions.IsChecked = closeOptions;
+			menuItemAutoPreviewMarkdown.IsChecked = autoPreviewMarkdown;
 
 			SetEncoding(Encoding.Default);
-
+			
 			// Enable hyperlinks in Markdown
-			//CommandBindings.Add(new CommandBinding(NavigationCommands.GoToPage, (sender, e) => Process.Start((string)e.Parameter)));
+			CommandBindings.Add(new CommandBinding(NavigationCommands.GoToPage, (sender, e) => Process.Start((string)e.Parameter)));
+
+			// Hackish fix for taking control of ctrl+scroll zoom
+			markdownViewer.MaxZoom = 100;
+			markdownViewer.MinZoom = 100;
+
+			// Fix flow document slow scroll speed
+			FlowDocumentExtensions.SetScrollSpeed(markdownViewer, 2.2);
 
 			// Load a file if specified\
 			string[] arguments = Environment.GetCommandLineArgs();
 			if (arguments.Length >= 2) {
-				if (arguments[1] == "/r" && arguments.Length >= 3) {
+				if (arguments[1] == "/t" && arguments.Length >= 3) {
 					LoadText(arguments[2]);
+				}
+				else if (arguments[1] == "/md" && arguments.Length >= 3) {
+					Load(arguments[2], true);
 				}
 				else {
 					Load(arguments[1]);
 				}
+			}
+			else {
+				SetEncodingToDefault();
 			}
 
 			locked = false;
@@ -203,27 +241,9 @@ namespace TriggersNotepad {
 			if (!hasSaved) {
 				e.Cancel = !SaveChanges();
 			}
-			Settings.Default.FontFamily = textEditor.FontFamily.ToString();
-			Settings.Default.FontSize = textEditor.FontSize;
-			Settings.Default.FontWeight = textEditor.FontWeight.ToString();
-			Settings.Default.FontStyle = textEditor.FontStyle.ToString();
-			Settings.Default.FontStretch = textEditor.FontStretch.ToString();
-
-			Settings.Default.WordWrap = textEditor.WordWrap;
-			Settings.Default.LineNumbers = textEditor.ShowLineNumbers;
-			Settings.Default.SmartIndent = smartIndent;
-			Settings.Default.TextDragging = textEditor.Options.EnableTextDragDrop;
-			Settings.Default.SpellCheck = spellCheck;
-			Settings.Default.Hyperlinks = textEditor.Options.EnableHyperlinks;
-
-			Settings.Default.RealTimeFind = realTimeFind;
-			Settings.Default.CloseGoto = closeGoto;
-			Settings.Default.DarkMode = darkMode;
-			Settings.Default.StatusBar = showStatusBar;
-
-			Settings.Default.WindowWidth = (int)this.Width;
-			Settings.Default.WindowHeight = (int)this.Height;
-			Settings.Default.Save();
+			if (!e.Cancel && closeOptions) {
+				SaveOptions();
+			}
 		}
 
 		private void OnExitClicked(object sender, ExecutedRoutedEventArgs e) {
@@ -260,7 +280,8 @@ namespace TriggersNotepad {
 				hasSaved = true;
 				encoding = Encoding.Default;
 				UpdateTitle();
-				UpdateStatusBar();
+				UpdateStatusBarTextEditor();
+				SetEncodingToDefault();
 			}
 		}
 		private void OnOpen(object sender, ExecutedRoutedEventArgs e) {
@@ -269,7 +290,8 @@ namespace TriggersNotepad {
 				fileDialog.Title = "Open";
 				fileDialog.AddExtension = true;
 				fileDialog.DefaultExt = ".txt";
-				fileDialog.FileName = (newFile ? "*.txt" : IOPath.GetFileName(filePath));
+				fileDialog.FilterIndex = 0;
+				//fileDialog.FileName = (newFile ? "*.txt" : IOPath.GetFileName(filePath));
 				fileDialog.InitialDirectory = lastDirectory;
 				string filter = "";
 				string allTextFilers = "All Text Files|";
@@ -277,14 +299,14 @@ namespace TriggersNotepad {
 					filter += FileTypes[i * 2] + " (" + FileTypes[i * 2 + 1] + ")|" + FileTypes[i * 2 + 1] + "|";
 					allTextFilers += FileTypes[i * 2 + 1] + (i + 1 < FileTypes.Length / 2 ? ";" : "|");
 				}
-				fileDialog.Filter = filter + allTextFilers + "All Files (*.*)|*.*";
+				fileDialog.Filter = allTextFilers + filter + "All Files (*.*)|*.*";
 				var result = fileDialog.ShowDialog(this);
 				if (result.HasValue && result.Value) {
 					Load(fileDialog.FileName);
 				}
 			}
 		}
-		private void Load(string path) {
+		private bool Load(string path, bool previewMarkdown = false) {
 			try {
 				locked = true;
 				textEditor.Load(path);
@@ -297,7 +319,14 @@ namespace TriggersNotepad {
 				menuItemNotepad.IsEnabled = true;
 				SetEncoding(GetEncoding(filePath));
 				UpdateTitle();
-				UpdateStatusBar();
+				UpdateStatusBarTextEditor();
+				if ((IOPath.GetExtension(path) == ".md" && autoPreviewMarkdown) || previewMarkdown) {
+					PreviewMarkdown();
+				}
+				else if (viewingMarkdown) {
+					LeaveMarkdown();
+				}
+				return true;
 			}
 			catch (FileNotFoundException) {
 				TriggerMessageBox.Show(loading ? null : this, MessageIcon.Warning, "Could not open the specified file. File not found!", "Open File");
@@ -307,6 +336,7 @@ namespace TriggersNotepad {
 				TriggerMessageBox.Show(loading ? null : this, MessageIcon.Warning, "Could not open the specified file!\n" + exc.Message, "Open File");
 				locked = false;
 			}
+			return false;
 		}
 
 		private void LoadText(string text) {
@@ -323,7 +353,8 @@ namespace TriggersNotepad {
 			hasSaved = true;
 			encoding = Encoding.Default;
 			UpdateTitle();
-			UpdateStatusBar();
+			UpdateStatusBarTextEditor();
+			SetEncodingToDefault();
 		}
 
 		private void OnSave(object sender, ExecutedRoutedEventArgs e) {
@@ -357,7 +388,9 @@ namespace TriggersNotepad {
 			SaveFileDialog fileDialog = new SaveFileDialog();
 			fileDialog.Title = "Save As";
 			fileDialog.AddExtension = true;
-			fileDialog.DefaultExt = ".txt";
+			fileDialog.DefaultExt = IOPath.GetExtension(filePath);
+			if (fileDialog.DefaultExt.Length == 0)
+				fileDialog.DefaultExt = ".txt";
 			fileDialog.FileName = IOPath.GetFileName(filePath);
 			fileDialog.InitialDirectory = lastDirectory;
 			string filter = "";
@@ -415,6 +448,9 @@ namespace TriggersNotepad {
 		#region Find Bar
 
 		private void OnOpenFindBarExecuted(object sender, ExecutedRoutedEventArgs e) {
+			if (viewingMarkdown)
+				return;
+
 			if (!menuItemFind.IsChecked) {
 				menuItemFind.IsChecked = true;
 				menuItemReplace.IsChecked = false;
@@ -435,6 +471,9 @@ namespace TriggersNotepad {
 			textBoxFind.Focus();
 		}
 		private void OnOpenReplaceBarExecuted(object sender, ExecutedRoutedEventArgs e) {
+			if (viewingMarkdown)
+				return;
+
 			if (!menuItemReplace.IsChecked) {
 				menuItemReplace.IsChecked = true;
 				menuItemFind.IsChecked = false;
@@ -481,7 +520,35 @@ namespace TriggersNotepad {
 		#endregion
 
 		#region Settings
+		
+		private void SaveOptions() {
+			Settings.Default.FontFamily = textEditor.FontFamily.ToString();
+			Settings.Default.FontSize = fontSize;
+			Settings.Default.FontWeight = textEditor.FontWeight.ToString();
+			Settings.Default.FontStyle = textEditor.FontStyle.ToString();
+			Settings.Default.FontStretch = textEditor.FontStretch.ToString();
 
+			Settings.Default.WordWrap = textEditor.WordWrap;
+			Settings.Default.LineNumbers = textEditor.ShowLineNumbers;
+			Settings.Default.SmartIndent = smartIndent;
+			Settings.Default.TextDragging = textEditor.Options.EnableTextDragDrop;
+			Settings.Default.SpellCheck = spellCheck;
+			Settings.Default.Hyperlinks = textEditor.Options.EnableHyperlinks;
+
+			Settings.Default.AutoPreviewMarkdown = autoPreviewMarkdown;
+			Settings.Default.RealTimeFind = realTimeFind;
+			Settings.Default.CloseGoto = closeGoto;
+			Settings.Default.DarkMode = darkMode;
+			Settings.Default.StatusBar = showStatusBar;
+
+			Settings.Default.CloseOptions = closeOptions;
+
+			Settings.Default.EncodingDefault = encodingDefault;
+
+			Settings.Default.WindowWidth = (int)this.Width;
+			Settings.Default.WindowHeight = (int)this.Height;
+			Settings.Default.Save();
+		}
 		private void OnWordWrapClicked(object sender, RoutedEventArgs e) {
 			textEditor.WordWrap = (sender as MenuItem).IsChecked;
 		}
@@ -503,7 +570,7 @@ namespace TriggersNotepad {
 		private void OnFontClicked(object sender, RoutedEventArgs e) {
 			var fontDialog = new FontDialogSample.FontChooser();
 			fontDialog.SelectedFontFamily = textEditor.FontFamily;
-			fontDialog.SelectedFontSize = textEditor.FontSize;
+			fontDialog.SelectedFontSize = fontSize;
 			fontDialog.SelectedFontWeight = textEditor.FontWeight;
 			fontDialog.SelectedFontStyle = textEditor.FontStyle;
 			fontDialog.SelectedFontStretch = textEditor.FontStretch;
@@ -512,6 +579,8 @@ namespace TriggersNotepad {
 			var result = fontDialog.ShowDialog();
 			if (result.HasValue && result.Value) {
 				fontDialog.ApplyPropertiesToObject(textEditor);
+				fontSize = textEditor.FontSize;
+				SetFontSizeDelta(0);
 			}
 		}
 		private void OnLineNumbersClicked(object sender, RoutedEventArgs e) {
@@ -595,10 +664,15 @@ namespace TriggersNotepad {
 				textEditor.Options.EnableEmailHyperlinks = textEditor.Options.EnableHyperlinks;
 
 				textEditor.FontFamily = (FontFamily)new FontFamilyConverter().ConvertFromString(Settings.Default.FontFamily);
+				fontSize = textEditor.FontSize;
+				SetFontSizeDelta(0);
 				textEditor.FontSize = Settings.Default.FontSize;
 				textEditor.FontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(Settings.Default.FontWeight);
 				textEditor.FontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(Settings.Default.FontStyle);
 				textEditor.FontStretch = (FontStretch)new FontStretchConverter().ConvertFromString(Settings.Default.FontStretch);
+
+				autoPreviewMarkdown = Settings.Default.AutoPreviewMarkdown;
+				menuItemAutoPreviewMarkdown.IsChecked = autoPreviewMarkdown;
 
 				realTimeFind = Settings.Default.RealTimeFind;
 				menuItemRealTimeFind.IsChecked = realTimeFind;
@@ -616,7 +690,36 @@ namespace TriggersNotepad {
 				showStatusBar = Settings.Default.StatusBar;
 				menuItemStatusBar.IsChecked = showStatusBar;
 
+				encodingDefault = Settings.Default.EncodingDefault;
+
+				UpdateTextEditorFontSizeDelta();
+
 				Redraw();
+			}
+		}
+
+		private void OnSaveOptionsClicked(object sender, RoutedEventArgs e) {
+			SaveOptions();
+		}
+		private void OnCloseOptionsClicked(object sender, RoutedEventArgs e) {
+			closeOptions = (sender as MenuItem).IsChecked;
+		}
+		private void OnSetEncodingDefaultClicked(object sender, RoutedEventArgs e) {
+			for (int i = 0; i < 4; i++) {
+				MenuItem menuItem = menuFormat.Items[i] as MenuItem;
+				if (menuItem.IsChecked) {
+					encodingDefault = menuItem.Header as string;
+					break;
+				}
+			}
+		}
+		private void SetEncodingToDefault() {
+			for (int i = 0; i < 4; i++) {
+				MenuItem menuItem = menuFormat.Items[i] as MenuItem;
+				if (menuItem.Header as string == encodingDefault)
+					menuItem.IsChecked = true;
+				else
+					menuItem.IsChecked = false;
 			}
 		}
 
@@ -624,9 +727,15 @@ namespace TriggersNotepad {
 
 		#region Status Bar
 
-		private void UpdateStatusBar() {
+		private void UpdateStatusBarTextEditor() {
 			textBlockTotals.Text = "Lines " + textEditor.LineCount + ", Chars " + textEditor.Text.Length;
 			textBlockPosition.Text = "Line " + textEditor.TextArea.Caret.Position.Line + ", Col " + textEditor.TextArea.Caret.Position.Column;
+		}
+		private void UpdateStatusBarZoom() {
+			int zoom = (int)Math.Floor(GetFontZoom(fontSizeDelta) * 100);
+			if (viewingMarkdown)
+				zoom = (int)markdownViewer.Zoom;
+			textBlockZoom.Text = "View " + zoom + "%";
 		}
 
 		#endregion
@@ -706,9 +815,10 @@ namespace TriggersNotepad {
 				string text = textEditor.Text;
 				locked = true;
 				int start = textEditor.SelectionStart;
-				text = text.Remove(start, search.Length);
-				text = text.Insert(start, replace);
-				textEditor.Text = text;
+				//text = text.Remove(start, search.Length);
+				//text = text.Insert(start, replace);
+				textEditor.Document.Replace(start, search.Length, replace);
+				//textEditor.Text = text;
 				textEditor.CaretOffset = start + replace.Length;
 				locked = false;
 				searchFocus = false;
@@ -736,10 +846,12 @@ namespace TriggersNotepad {
 				if (result == MessageBoxResult.Yes) {
 					if (!matchCase) {
 						Regex regex = new Regex(search, RegexOptions.IgnoreCase);
-						textEditor.Text = regex.Replace(text, replace);
+						//textEditor.Text = regex.Replace(text, replace);
+						textEditor.Document.Replace(0, textEditor.Text.Length, regex.Replace(text, replace));
 					}
 					else {
-						textEditor.Text = text.Replace(search, replace);
+						//textEditor.Text = text.Replace(search, replace);
+						textEditor.Document.Replace(0, textEditor.Text.Length, text.Replace(search, replace));
 					}
 					searchFocus = false;
 					IncrementSearchUpdate();
@@ -760,7 +872,7 @@ namespace TriggersNotepad {
 				UpdateTitle();
 			}
 			searchFocus = false;
-			UpdateStatusBar();
+			UpdateStatusBarTextEditor();
 			IncrementSearchUpdate();
 		}
 		private void OnTextInput(object sender, TextCompositionEventArgs e) {
@@ -771,7 +883,7 @@ namespace TriggersNotepad {
 				return;
 
 			searchFocus = false;
-			UpdateStatusBar();
+			UpdateStatusBarTextEditor();
 		}
 
 		#endregion
@@ -838,6 +950,7 @@ namespace TriggersNotepad {
 			else {
 				textEditor.SelectionLength = 0;
 			}
+			UpdateStatusBarTextEditor();
 		}
 
 		#endregion
@@ -906,15 +1019,17 @@ namespace TriggersNotepad {
 		private void ToUppercase(object sender, ExecutedRoutedEventArgs e) {
 			int start = textEditor.SelectionStart;
 			string str = textEditor.Text.Substring(start, textEditor.SelectionLength);
-			string text = textEditor.Text.Remove(start, textEditor.SelectionLength);
-			textEditor.Text = text.Insert(start, str.ToUpper());
+			//string text = textEditor.Text.Remove(start, textEditor.SelectionLength);
+			//textEditor.Text = text.Insert(start, str.ToUpper());
+			textEditor.Document.Replace(start, textEditor.SelectionLength, str.ToUpper());
 			textEditor.Select(start, str.Length);
 		}
 		private void ToLowercase(object sender, ExecutedRoutedEventArgs e) {
 			int start = textEditor.SelectionStart;
 			string str = textEditor.Text.Substring(start, textEditor.SelectionLength);
 			string text = textEditor.Text.Remove(start, textEditor.SelectionLength);
-			textEditor.Text = text.Insert(start, str.ToLower());
+			//textEditor.Text = text.Insert(start, str.ToLower());
+			textEditor.Document.Replace(start, textEditor.SelectionLength, str.ToLower());
 			textEditor.Select(start, str.Length);
 		}
 
@@ -943,7 +1058,7 @@ namespace TriggersNotepad {
 					textEditor.CaretOffset = textEditor.Document.GetLineByNumber(line).Offset;
 					searchFocus = false;
 					textEditor.TextArea.Caret.BringCaretToView();
-					UpdateStatusBar();
+					UpdateStatusBarTextEditor();
 
 					if (closeGoto)
 						OnCloseGotoBarPressed(null, null);
@@ -1005,6 +1120,64 @@ namespace TriggersNotepad {
 
 		#endregion
 
+		#region Font Size Delta
+		
+		private double GetFontZoom(int delta) {
+			return Math.Pow(1.15, delta);
+		}
+		private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) {
+				e.Handled = true;
+				ChangeFontSizeDelta(Math.Sign(e.Delta));
+			}
+		}
+		private void SetFontSizeDelta(int value) {
+			fontSizeDelta = value;
+			UpdateTextEditorFontSizeDelta();
+			UpdateStatusBarZoom();
+		}
+		private void ChangeFontSizeDelta(int difference) {
+			double zoom = GetFontZoom(fontSizeDelta + difference);
+			if (fontSize * zoom >= 1 && zoom <= 10) {
+				fontSizeDelta += difference;
+				UpdateTextEditorFontSizeDelta();
+				UpdateStatusBarZoom();
+			}
+		}
+		private void UpdateTextEditorFontSizeDelta() {
+			if (fontSizeDelta != 0) {
+				textEditor.FontSize = fontSize * GetFontZoom(fontSizeDelta);
+			}
+			else {
+				textEditor.FontSize = fontSize;
+			}
+		}
+
+		private void ExecuteZoomIn(object sender, ExecutedRoutedEventArgs e) {
+			ChangeFontSizeDelta(1);
+		}
+		private void ExecuteZoomOut(object sender, ExecutedRoutedEventArgs e) {
+			ChangeFontSizeDelta(-1);
+		}
+		private void ExecuteResetZoom(object sender, ExecutedRoutedEventArgs e) {
+			SetFontSizeDelta(0);
+			UpdateTextEditorFontSizeDelta();
+		}
+
+		private void CanExecuteZoomIn(object sender, CanExecuteRoutedEventArgs e) {
+			double zoom = GetFontZoom(fontSizeDelta + 1);
+			e.CanExecute = (zoom <= 10);
+		}
+		private void CanExecuteZoomOut(object sender, CanExecuteRoutedEventArgs e) {
+			double zoom = GetFontZoom(fontSizeDelta - 1);
+			e.CanExecute = (fontSize * zoom >= 1);
+		}
+		private void CanExecuteResetZoom(object sender, CanExecuteRoutedEventArgs e) {
+			e.CanExecute = (fontSizeDelta != 0);
+		}
+
+		#endregion
+
 		#region Help
 
 		private void OnCreditsClicked(object sender, RoutedEventArgs e) {
@@ -1020,11 +1193,11 @@ namespace TriggersNotepad {
 		private void OnOpenReadmeClicked(object sender, RoutedEventArgs e) {
 			string path = IOPath.Combine(
 					IOPath.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-					"Readme.txt"
+					"Readme.md"
 				);
 
 			if (File.Exists(path)) {
-				System.Diagnostics.Process.Start(Assembly.GetExecutingAssembly().Location, "\"" + path + "\"");
+				System.Diagnostics.Process.Start(Assembly.GetExecutingAssembly().Location, "/md \"" + path + "\"");
 			}
 			else {
 				TriggerMessageBox.Show(this, MessageIcon.Error, "Readme.txt is missing from the application directory!", "Missing File");
@@ -1034,11 +1207,11 @@ namespace TriggersNotepad {
 		private void OnOpenChangelogClicked(object sender, RoutedEventArgs e) {
 			string path = IOPath.Combine(
 					IOPath.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-					"Changelog.txt"
+					"Changelog.md"
 				);
 
 			if (File.Exists(path)) {
-				System.Diagnostics.Process.Start(Assembly.GetExecutingAssembly().Location, "\"" + path + "\"");
+				System.Diagnostics.Process.Start(Assembly.GetExecutingAssembly().Location, "/md \"" + path + "\"");
 			}
 			else {
 				TriggerMessageBox.Show(this, MessageIcon.Error, "Changelog.txt is missing from the application directory!", "Missing File");
@@ -1049,26 +1222,185 @@ namespace TriggersNotepad {
 
 		#region Markdown
 
-		/*private void OnPreviewMarkdown(object sender, ExecutedRoutedEventArgs e) {
-			if (markdownViewer.Visibility == Visibility.Visible) {
-				menuItemMarkdown.IsChecked = false;
-				textEditor.Visibility = Visibility.Visible;
-				markdownViewer.Visibility = Visibility.Hidden;
+		private void OnPreviewMarkdown(object sender, ExecutedRoutedEventArgs e) {
+			viewingMarkdown = !viewingMarkdown;
+			if (!viewingMarkdown) {
+				LeaveMarkdown();
 			}
 			else {
-				menuItemMarkdown.IsChecked = true;
-				textEditor.Visibility = Visibility.Hidden;
-				markdownViewer.Visibility = Visibility.Visible;
-				var converter = new Markdown.Xaml.TextToFlowDocumentConverter();
-				converter.Markdown = (Markdown.Xaml.Markdown)this.Resources["Markdown"];
-				markdownViewer.Document = (FlowDocument)converter.Convert(textEditor.Text, null, null, null);
+				PreviewMarkdown();
 			}
+		}
+
+		private void LeaveMarkdown() {
+			viewingMarkdown = false;
+			menuItemMarkdown.IsChecked = false;
+			textEditor.Visibility = Visibility.Visible;
+			markdownViewer.Visibility = Visibility.Hidden;
+			markdownViewer.Zoom = 100;
+			markdownViewer.Document = null;
+			UpdateStatusBarZoom();
+		}
+
+		private void PreviewMarkdown() {
+			viewingMarkdown = true;
+			menuItemMarkdown.IsChecked = true;
+			textEditor.Visibility = Visibility.Hidden;
+			markdownViewer.Visibility = Visibility.Visible;
+			var converter = new Markdown.Xaml.TextToFlowDocumentConverter();
+			converter.Markdown = (Markdown.Xaml.Markdown)this.Resources["Markdown"];
+			converter.Markdown.AssetPathRoot = lastDirectory;
+			markdownViewer.Document = (FlowDocument)converter.Convert(textEditor.Text, null, null, null);
+			textEditor.SelectionLength = 0;
+			if (menuItemFind.IsChecked || menuItemReplace.IsChecked)
+				OnCloseFindBarPressed(null, null);
+			if (menuItemGoto.IsChecked)
+				OnCloseGotoBarPressed(null, null);
+			UpdateStatusBarZoom();
+			PrintVisualTree(markdownViewer);
 		}
 
 		private void CanExecutePreviewMarkdown(object sender, CanExecuteRoutedEventArgs e) {
 			e.CanExecute = true;
-		}*/
+		}
+
+		private void OnPreviewMarkdownPreviewScroll(object sender, MouseWheelEventArgs e) {
+			// A hackish workaround to keep track of the flowdocument zoom. MouseWheel events are a pain.
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) {
+				if (e.Delta > 0) {
+					if (markdownViewer.Zoom < 200) {
+						markdownViewer.MaxZoom += 10;
+						markdownViewer.MinZoom += 10;
+						UpdateStatusBarZoom();
+					}
+				}
+				else {
+					if (markdownViewer.Zoom > 70) {
+						markdownViewer.MaxZoom -= 10;
+						markdownViewer.MinZoom -= 10;
+						UpdateStatusBarZoom();
+					}
+				}
+				e.Handled = true;
+			}
+		}
+
+		private void OnAutoPreviewMarkdownClicked(object sender, RoutedEventArgs e) {
+			autoPreviewMarkdown = (sender as MenuItem).IsChecked;
+		}
+
+		public void PrintVisualTree(Visual visual, int level = 0) {
+			Console.WriteLine(new string(' ', level) + visual.GetType().ToString());
+
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++) {
+				PrintVisualTree((Visual)VisualTreeHelper.GetChild(visual, i), level + 1);
+			}
+		}
 
 		#endregion
+
+		private void CanExecuteTabsToSpaces(object sender, CanExecuteRoutedEventArgs e) {
+			Typeface typeface = new Typeface(textEditor.FontFamily, textEditor.FontStyle, textEditor.FontWeight, textEditor.FontStretch);
+			FormattedText ftHi = new FormattedText("Hi", CultureInfo.InvariantCulture, System.Windows.FlowDirection.LeftToRight, typeface, 10, Brushes.Black);
+			FormattedText ftHH = new FormattedText("HH", CultureInfo.InvariantCulture, System.Windows.FlowDirection.LeftToRight, typeface, 10, Brushes.Black);
+			e.CanExecute = (ftHi.Width == ftHH.Width);
+		}
+
+		private void ExecuteTabsToSpaces(object sender, ExecutedRoutedEventArgs e) {
+			textEditor.Document.Replace(0, textEditor.Text.Length, ProcessTabsToSpaces(textEditor.Text, tabSize));
+		}
+		private void ExecuteSpacesToTabs(object sender, ExecutedRoutedEventArgs e) {
+			textEditor.Document.Replace(0, textEditor.Text.Length, ProcessSpacesToTabs(textEditor.Text, tabSize));
+		}
+
+		static int GetNearestTabStop(int currentPosition, int tabLength) {
+			// if already at the tab stop, jump to the next tab stop.
+			if ((currentPosition % tabLength) == 1)
+				currentPosition += tabLength;
+			else {
+				// if in the middle of two tab stops, move forward to the nearest.
+				for (int i = 0; i < tabLength; i++, currentPosition++)
+					if ((currentPosition % tabLength) == 1)
+						break;
+			}
+
+			return currentPosition;
+		}
+
+		public static string ProcessTabsToSpaces(string input, int tabLength) {
+			if (string.IsNullOrEmpty(input))
+				return input;
+
+			StringBuilder output = new StringBuilder();
+
+			int positionInOutput = 1;
+			foreach (var c in input) {
+				switch (c) {
+					case '\t':
+						int spacesToAdd = GetNearestTabStop(positionInOutput, tabLength) - positionInOutput;
+						output.Append(new string(' ', spacesToAdd));
+						positionInOutput += spacesToAdd;
+						break;
+
+					case '\n':
+						output.Append(c);
+						positionInOutput = 1;
+						break;
+
+					default:
+						output.Append(c);
+						positionInOutput++;
+						break;
+				}
+			}
+			return output.ToString();
+		}
+
+		public static string ProcessSpacesToTabs(string input, int tabLength) {
+			if (string.IsNullOrEmpty(input))
+				return input;
+
+			StringBuilder output = new StringBuilder();
+
+			int positionInOutput = 1;
+			bool newLine = true;
+			int spaceCount = 0;
+			foreach (var c in input) {
+				switch (c) {
+					case ' ':
+						if (newLine)
+							spaceCount++;
+						else
+							output.Append(c);
+						break;
+
+					case '\n':
+						if (spaceCount > 0) {
+							if (spaceCount >= tabLength)
+								output.Append(new string('\t', spaceCount / 4));
+							if (spaceCount % 4 > 0)
+								output.Append(new string(' ', spaceCount % 4));
+							spaceCount = 0;
+						}
+						output.Append(c);
+						positionInOutput = 1;
+						newLine = true;
+						break;
+
+					default:
+						if (spaceCount > 0) {
+							if (spaceCount >= tabLength)
+								output.Append(new string('\t', spaceCount / 4));
+							if (spaceCount % 4 > 0)
+								output.Append(new string(' ', spaceCount % 4));
+							spaceCount = 0;
+						}
+						output.Append(c);
+						positionInOutput++;
+						break;
+				}
+			}
+			return output.ToString();
+		}
 	}
 }
