@@ -1,7 +1,7 @@
 # Trigger's Notepad ![App Icon](http://i.imgur.com/uDcNXy5.png)
 My take on a minimal (yet bulky) replacement for Windows Notepad. Trigger's Notepad improves most of the broken features in Windows Notepad and also adds plenty of new and useful features. This tool is not designed to replace programs with syntax highlighting like Notepad++. Its main goal is to be a basic text editor designed with one-window-per-file in mind.
 
-![Preview](http://i.imgur.com/2ljJny3.png)
+![Preview](http://i.imgur.com/0ma6HKI.png)
 
 I am always looking for a better icon for Trigger's Notepad. If you have a suggestion, I'd love to hear it.
 
