@@ -1,5 +1,11 @@
 # Trigger's Notepad Changelog ![Icon](App.png)
 
+## CPU Usage Fix 1.0.1.1 - 6/21/17
+
+#### Fixes:
+* No longer wastes CPU cycles with endless searching. (Drastically reduces CPU usage)
+
+
 ## Minor Additions & Markdown 1.0.1.0 - 2/15/17
 
 #### Fixes:

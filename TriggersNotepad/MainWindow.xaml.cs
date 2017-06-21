@@ -234,7 +234,7 @@ namespace TriggersNotepad {
 		#region Window
 
 		private async void OnWindowLoaded(object sender, RoutedEventArgs e) {
-			await Task.Run(() => RunTextSearcher());
+			//await Task.Run(() => RunTextSearcher());
 		}
 
 		private void OnClosing(object sender, CancelEventArgs e) {
@@ -457,7 +457,8 @@ namespace TriggersNotepad {
 				textBoxFind.IsEnabled = true;
 				textBoxReplace.IsEnabled = false;
 				searching = true;
-				
+				IncrementSearchUpdate();
+
 				findBarStoryboard.Children.Clear();
 				DoubleAnimation anim = new DoubleAnimation(findBar.Height, 31, TimeSpan.FromSeconds(0.1));
 				anim.BeginTime = TimeSpan.Zero;
@@ -480,7 +481,8 @@ namespace TriggersNotepad {
 				textBoxFind.IsEnabled = true;
 				textBoxReplace.IsEnabled = true;
 				searching = true;
-				
+				IncrementSearchUpdate();
+
 				findBarStoryboard.Children.Clear();
 				DoubleAnimation anim = new DoubleAnimation(findBar.Height, 56, TimeSpan.FromSeconds(0.1));
 				anim.BeginTime = TimeSpan.Zero;
@@ -501,7 +503,7 @@ namespace TriggersNotepad {
 			textBoxReplace.Text = "";
 			searchColorizer.SearchTerm = "";
 			searching = false;
-			
+
 			findBarStoryboard.Children.Clear();
 			DoubleAnimation anim = new DoubleAnimation(findBar.Height, 0, TimeSpan.FromSeconds(0.1));
 			anim.BeginTime = TimeSpan.Zero;
@@ -957,52 +959,54 @@ namespace TriggersNotepad {
 
 		#region Async Text Searching
 
-		private void IncrementSearchUpdate() {
-			if (searching)
+		private async void IncrementSearchUpdate() {
+			if (searching) {
 				updateSearch++;
-		}
-		private void RunTextSearcher() {
-			while (true) {
-				if (searching && updateSearch > 0) {
-					int updateCount = updateSearch;
-					Console.WriteLine(updateSearch);
-					string search = "";
-					string text = "";
-					Dispatcher.Invoke(() => {
-						search = textBoxFind.Text;
-						text = textEditor.Text;
-					});
-					int start = 0;
-					int index;
-					int count = 0;
-					if (search.Length > 0) {
-						while ((index = text.IndexOf(search, start, MatchComparison)) >= 0) {
-							start = index + 1;
-							count++;
-						}
-					}
-					Dispatcher.Invoke(() => {
-						if (search.Length == 0)
-							labelMatches.Content = "";
-						else if (count == 0)
-							labelMatches.Content = "No matches found";
-						else
-							labelMatches.Content = "Found " + count + " match" + (count != 1 ? "es" : "");
-
-						if (count > 0 || search.Length == 0) {
-							textBoxFind.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-							textBoxFind.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-							textBoxFind.CaretBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-						}
-						else {
-							textBoxFind.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-							textBoxFind.Background = new SolidColorBrush(Color.FromRgb(255, 102, 102));
-							textBoxFind.CaretBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-						}
-					});
-					updateSearch -= updateCount;
+				if (updateSearch == 1) {
+					await Task.Run(() => RunTextSearcher());
 				}
 			}
+		}
+		private void RunTextSearcher() {
+			while (searching && updateSearch > 0) {
+				int updateCount = updateSearch;
+				string search = "";
+				string text = "";
+				Dispatcher.Invoke(() => {
+					search = textBoxFind.Text;
+					text = textEditor.Text;
+				});
+				int start = 0;
+				int index;
+				int count = 0;
+				if (search.Length > 0) {
+					while ((index = text.IndexOf(search, start, MatchComparison)) >= 0) {
+						start = index + 1;
+						count++;
+					}
+				}
+				Dispatcher.Invoke(() => {
+					if (search.Length == 0)
+						labelMatches.Content = "";
+					else if (count == 0)
+						labelMatches.Content = "No matches found";
+					else
+						labelMatches.Content = "Found " + count + " match" + (count != 1 ? "es" : "");
+
+					if (count > 0 || search.Length == 0) {
+						textBoxFind.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+						textBoxFind.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+						textBoxFind.CaretBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+					}
+					else {
+						textBoxFind.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+						textBoxFind.Background = new SolidColorBrush(Color.FromRgb(255, 102, 102));
+						textBoxFind.CaretBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+					}
+				});
+				updateSearch -= updateCount;
+			}
+			updateSearch = 0;
 		}
 
 		#endregion

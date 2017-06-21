@@ -2,7 +2,7 @@
 
 * **Author:** Robert Jordan (trigger_death)
 * **GitHub:** [https://github.com/trigger-death/TriggersNotepad](https://github.com/trigger-death/TriggersNotepad)
-* **Version:** 1.0.1.0 (2/15/17)
+* **Version:** 1.0.1.1 (6/21/17)
 
 ## Features
 
