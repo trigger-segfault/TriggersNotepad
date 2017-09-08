@@ -8,7 +8,7 @@ I am always looking for a better icon for Trigger's Notepad. If you have a sugge
 ### [Credits](https://github.com/trigger-death/TriggersNotepad/wiki/Credits) | [Image Album](http://imgur.com/a/jFj2q)
 
 ## Requirements for Running
-* .NET Framwork 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
+* .NET Framework 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
 
 ## Requirements for Source Code
 * AvalonEdit for the text editor. | [NuGet Package](https://www.nuget.org/packages/AvalonEdit)
