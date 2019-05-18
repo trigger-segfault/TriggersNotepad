@@ -4,6 +4,7 @@
 [![Latest Release Date](https://img.shields.io/github/release-date-pre/trigger-death/TriggersNotepad.svg?style=flat&label=released)](https://github.com/trigger-death/TriggersNotepad/releases/latest)
 [![Total Downloads](https://img.shields.io/github/downloads/trigger-death/TriggersNotepad/total.svg?style=flat)](https://github.com/trigger-death/TriggersNotepad/releases)
 [![Creation Date](https://img.shields.io/badge/created-february%202017-A642FF.svg?style=flat)](https://github.com/trigger-death/TriggersNotepad/commit/b79f2d5424998bad340d56fcc5a5f9bed4fa9436)
+[![Discord](https://img.shields.io/discord/436949335947870238.svg?style=flat&logo=discord&label=chat&colorB=7389DC&link=https://discord.gg/vB7jUbY)](https://discord.gg/vB7jUbY)
 
 My take on a minimal (yet bulky) replacement for Windows Notepad. Trigger's Notepad improves most of the broken features in Windows Notepad and also adds plenty of new and useful features. This tool is not designed to replace programs with syntax highlighting like Notepad++. Its main goal is to be a basic text editor designed with one-window-per-file in mind.
 
