@@ -6,6 +6,10 @@
     <DirectoryRef Id="INSTALLFOLDER">
       <Component Id="BasicFileAssociation" Guid="8F21BDE2-5E45-4634-B0DD-76188A25029A">
         <RegistryValue Root="HKLM" Key="$(var.SoftwarePath)" Name="BasicFileAssociation" Type="integer" Value="1"/>
+
+        <RegistryValue Root="HKCR" Key=".txt\ShellNew" Name="IconPath" Value="[INSTALLFOLDER]FileTypes\txt.ico" Type="string" />
+        <RegistryValue Root="HKCR" Key=".txt\ShellNew" Name="ItemName" Value="Text File" Type="string" />
+        <RegistryValue Root="HKCR" Key=".txt\ShellNew" Name="NullFile" Value="" Type="string" />
         
         <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.txt" Name="FriendlyTypeName" Value="Text Document" Type="string" />
         <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\TriggersNotepad.txt\DefaultIcon" Value="[INSTALLFOLDER]FileTypes\txt.ico" Type="string" />
